@@ -26,7 +26,9 @@ Haxe Language Server is written in Haxe (wow) then compiled to nodejs. We also b
 
 ## Building
 I have no fucking clue how to build that shit it always gave me errors so i just copied the language server from the vscode extension :pray:
+
 But generally it should be like this:
+
 First clone the repository
 
 ```bash
