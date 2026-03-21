@@ -18,7 +18,7 @@ cd client
 bun install
 bun run build
 ```
-The output will automatically overwrite the compiled source in the [monaco folder](https://github.com/ShadowEngineTeam/Monaco/tree/main/monaco) which is embedded into the compiled haxe binary and loaded through the webview.
+The output will automatically overwrite the compiled source in the [monaco](https://github.com/ShadowEngineTeam/Monaco/tree/main/monaco) folder which is embedded into the compiled haxe binary and loaded through the webview.
 
 # Building & Bundling The Haxe Language Server
 
@@ -36,7 +36,7 @@ git clone https://github.com/vshaxe/haxe-language-server
 cd haxe-language-server
 ```
 
-Then create a newrepo inside of it so the libraries aren't downloaded globally but inside of a local `.haxelib` foldder using:
+Then create a newrepo inside of it so the libraries aren't downloaded globally but inside of a local `.haxelib` folder using:
 ```bash
 haxelib newrepo
 ```
