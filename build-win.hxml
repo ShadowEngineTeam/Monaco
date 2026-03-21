@@ -5,10 +5,8 @@
 --dce full
 --macro macros.AssetsMacro.build()
 -D windows
--D HXCPP_M64
 -D HXCPP_CHECK_POINTER
 -D HXCPP_STACK_LINE
--D HXCPP_STACK_IDS
 -D HXCPP_STACK_TRACE
 -D HXCPP_CATCH_SEGV
 # -D no_console
