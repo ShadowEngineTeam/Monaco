@@ -1,0 +1,12 @@
+--class-path source
+--main Main
+--cpp export/linux
+--library hxwebview
+--dce full
+--macro macros.AssetsMacro.build()
+-D linux
+-D HXCPP_CHECK_POINTER
+-D HXCPP_STACK_LINE
+-D HXCPP_STACK_TRACE
+-D HXCPP_CATCH_SEGV
+# -D no_console
