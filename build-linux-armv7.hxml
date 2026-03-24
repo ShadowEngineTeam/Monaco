@@ -1,0 +1,5 @@
+common.hxml
+--cpp export/linux
+-D linux
+-D HXCPP_ARMV7
+-D HAXE_LANGUAGE_SERVER=bin/linux/haxe-language-server-armv7

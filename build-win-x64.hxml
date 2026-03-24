@@ -1,0 +1,5 @@
+common.hxml
+--cpp export/win
+-D windows
+-D HXCPP_M64
+-D HAXE_LANGUAGE_SERVER=bin/win/haxe-language-server-x64.exe

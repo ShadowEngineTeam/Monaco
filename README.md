@@ -54,26 +54,31 @@ haxe build.hxml
 If it compiled for you then congrats the output should supposedly be in `bin/server.js` relative to the build.hxml. You might want to move it to `client/haxe/server.js`.
 
 ## Bundling
-Using the npm [@yao-pkg/pkg](https://github.com/yao-pkg/pkg) library you can pack the compiled `server.js` into a binary for Windows, Linux or Mac.
+We prebuild the compiled `server.js` intox64_86 and arm64 binaries using the npm [@yao-pkg/pkg](https://github.com/yao-pkg/pkg) for Windows, Linux and Mac.
 
-First you must install the library globally
+If you want to update the language server or build for armv7 then foloow the build instructions below.
+
+First you must install the pkg library globally
 ```bash
 npm install -g @yao-pkg/pkg
 ```
 Then you may bundle it for the following targets:
 ### Windows
 ```bash
-pkg client/haxe/server.js --targets node18-win-x64 --output bin/haxe-language-server
+pkg client/haxe/server.js --targets node18-win-x64 --output bin/win/haxe-language-server-x64
 ```
 
 ### Linux
 ```bash
-pkg client/haxe/server.js --targets node18-linux-x64 --output bin/haxe-language-server
+pkg client/haxe/server.js --targets node18-linux-x64 --output bin/linux/haxe-language-server-x64
+pkg client/haxe/server.js --targets node18-linux-arm64 --output bin/linux/haxe-language-server-arm64
+pkg client/haxe/server.js --targets node18-linux-armv7 --output bin/linux/haxe-language-server-armv7
 ```
 
 ### macOS
 ```bash
-pkg client/haxe/server.js --targets node18-macos-x64 --output bin/haxe-language-server
+pkg client/haxe/server.js --targets node18-macos-x64 --output bin/mac/haxe-language-server-x64
+pkg client/haxe/server.js --targets node18-macos-arm64 --output bin/mac/haxe-language-server-arm64
 ```
 
 ### NOTE
