@@ -13,19 +13,12 @@ class AssetsMacro
 
     public static function build()
     {
-        var output = Compiler.getOutput();
-
-        var outputBin:String = Path.join([output, 'bin']);
-        if (!FileSystem.exists(outputBin))
-            FileSystem.createDirectory(outputBin);
-
-        for (file in FileSystem.readDirectory('bin'))
-            File.copy('bin/$file', Path.join([outputBin, file]));
-
+        copyHaxeLanguageServer();
+     
         embedAssets(MONACO_ASSETS_FOLDER);
     }
 
-    public static function embedAssets(source:String, ?name:String)
+    private static function embedAssets(source:String, ?name:String):Void
     {
         if (name == null) name = source;
 
@@ -38,10 +31,22 @@ class AssetsMacro
         }
         else
         {
-            // trace('src:$source');
-            // trace('name:$name');
             Context.addResource(name, File.getBytes(source));
         }
+    }
+
+    private static function copyHaxeLanguageServer():Void
+    {
+        var output = Compiler.getOutput();
+        var bin:String = Context.definedValue('HAXE_LANGUAGE_SERVER');
+        var dir:String = Path.directory(bin);
+        var outputBin:String = Path.join([output, bin]);
+        var outputDir:String = Path.join([output, dir]);
+        
+        if (!FileSystem.exists(outputDir))
+            FileSystem.createDirectory(outputDir);
+        
+        File.copy(bin, outputBin);
     }
 }
 #end

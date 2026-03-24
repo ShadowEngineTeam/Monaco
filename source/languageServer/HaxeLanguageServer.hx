@@ -1,5 +1,6 @@
 package languageServer;
 
+import utils.Util;
 import monaco.MonacoLoader;
 import sys.io.Process;
 import haxe.io.Input;
@@ -17,23 +18,23 @@ class HaxeLanguageServer
 
 	public static function init():Void
 	{
-		process = new Process('bin/haxe-language-server.exe', []);
+		process = new Process(Util.getDefine('HAXE_LANGUAGE_SERVER'), []);
 
-		if (MonacoLoader.webview != null)
+		if (MonacoLoader.webview != null && process != null)
 		{
 			MonacoLoader.webview.bind('lspSend', (seq, req, _) ->
 			{
 				// trace('lspSend called: $req');
 				var args:Array<String> = Json.parse(req);
-                var json:String = args[0];
-    
-                var bytes = Bytes.ofString(json);
-                var header = 'Content-Length: ${bytes.length}\r\n\r\n';
-                process.stdin.writeString(header);
-                process.stdin.write(bytes);
-                process.stdin.flush();
-    
-                MonacoLoader.webview.resolve(seq, 0, '{}');
+				var json:String = args[0];
+
+				var bytes = Bytes.ofString(json);
+				var header = 'Content-Length: ${bytes.length}\r\n\r\n';
+				process.stdin.writeString(header);
+				process.stdin.write(bytes);
+				process.stdin.flush();
+
+				MonacoLoader.webview.resolve(seq, 0, '{}');
 			}, null);
 		}
 
@@ -43,7 +44,8 @@ class HaxeLanguageServer
 			{
 				try
 				{
-                    if (process == null) break;
+					if (process == null)
+						break;
 
 					var msg = readLspMessage(process.stdout);
 
@@ -51,9 +53,10 @@ class HaxeLanguageServer
 						break;
 					// trace('sending message: $msg');
 					var js = 'window._lspReceive(${haxe.Json.stringify(msg)})';
-           		 	MonacoLoader.webview.dispatch((_,_) -> {
-                		MonacoLoader.webview.eval(js);
-            		}, null);
+					MonacoLoader.webview.dispatch((_, _) ->
+					{
+						MonacoLoader.webview.eval(js);
+					}, null);
 				}
 				catch (e:Exception)
 				{
@@ -68,7 +71,7 @@ class HaxeLanguageServer
 	{
 		if (process != null)
 		{
-            process.kill();
+			process.kill();
 			process.close();
 			process = null;
 		}
@@ -81,19 +84,20 @@ class HaxeLanguageServer
 		{
 			var line = input.readLine();
 
-            line = StringTools.trim(line);
-			if (line.length <= 0) break;
+			line = StringTools.trim(line);
+			if (line.length <= 0)
+				break;
 
-            // iLine running LineOS for $99^⁹⁹
-            var iLine:Null<Int> = Std.parseInt(line.substr(16));
+			// iLine running LineOS for $99^⁹⁹
+			var iLine:Null<Int> = Std.parseInt(line.substr(16));
 			if (line.startsWith('Content-Length: ') && iLine != null)
 				contentLength = iLine;
 		}
-		
-        if (contentLength == 0)
+
+		if (contentLength == 0)
 			return null;
-		
-        var bytes = input.read(contentLength);
+
+		var bytes = input.read(contentLength);
 
 		return bytes.toString();
 	}

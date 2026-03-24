@@ -1,7 +1,9 @@
 package monaco;
 
+import haxe.Exception;
 import languageServer.HaxeLanguageServer;
 import webview.WebView;
+import haxe.atomic.AtomicBool;
 
 using StringTools;
 
@@ -9,6 +11,7 @@ using StringTools;
 class MonacoLoader
 {
 	public static var webview:Null<WebView> = null;
+	public static var running:AtomicBool = new AtomicBool(false);
 
 	public static function load(debug:Bool = false, cwd:String, hxml:String, ?workspaceName:String):Void
 	{
@@ -25,23 +28,33 @@ class MonacoLoader
 			loadArgs += '&name=$workspaceName';
 
 		webview.navigate(MonacoServer.resolveAsset('src/index.html') + loadArgs);
-		webview.run();
 
-		HaxeLanguageServer.exit();
-		MonacoServer.closeServer();
+		running.store(true);
+		try
+		{
+			webview.run();
+		}
+		catch (e:Exception)
+		{
+			trace('WebView Main Loop ran into an exception: ${e.stack}');
+		}
 
-		webview.destroy();
-		webview = null;
+		cleanup(false);
 	}
 
-	@:keep
-	public static function cleanup():Void
+	public static function cleanup(terminate:Bool = true):Void
 	{
+		if (!running.load())
+			return;
+
+		running.store(false);
 		HaxeLanguageServer.exit();
 		MonacoServer.closeServer();
+
 		if (webview != null)
 		{
-			webview.terminate();
+			if (terminate)
+				webview.terminate();
 			webview.destroy();
 			webview = null;
 		}

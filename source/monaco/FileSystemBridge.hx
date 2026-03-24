@@ -8,6 +8,7 @@ import haxe.io.Path;
 import haxe.Json;
 
 using StringTools;
+using utils.Util;
 
 @:nullSafety
 class FileSystemBridge
@@ -25,8 +26,7 @@ class FileSystemBridge
 		webview.bind('fsReadFile', (seq, req, _) ->
 		{
 			var args:Array<String> = Json.parse(req);
-			var path:String = args[0].replace('/', '\\');
-			var absolutePath:String = Path.isAbsolute(path) ? path : Path.join([cwd, path]);
+			var absolutePath:String = resolvePath(args[0]);
 
 			try
 			{
@@ -42,8 +42,7 @@ class FileSystemBridge
 		webview.bind('fsWriteFile', (seq, req, _) ->
 		{
 			var args:Array<String> = Json.parse(req);
-			var path:String = args[0].replace('/', '\\');
-			var absolutePath:String = Path.isAbsolute(path) ? path : Path.join([cwd, path]);
+			var absolutePath:String = resolvePath(args[0]);
 			var content:String = args[1];
 
 			try
@@ -60,8 +59,7 @@ class FileSystemBridge
 		webview.bind('fsExists', (seq, req, _) ->
 		{
 			var args:Array<String> = Json.parse(req);
-			var path:String = args[0].replace('/', '\\');
-			var absolutePath:String = Path.isAbsolute(path) ? path : Path.join([cwd, path]);
+			var absolutePath:String = resolvePath(args[0]);
 			var exists:Bool = FileSystem.exists(absolutePath);
 			webview.resolve(seq, 0, Json.stringify(exists));
 		}, null);
@@ -69,8 +67,7 @@ class FileSystemBridge
 		webview.bind('fsReadDir', (seq, req, _) ->
 		{
 			var args:Array<String> = Json.parse(req);
-			var path:String = args[0].replace('/', '\\');
-			var absolutePath:String = path == '.' ? cwd : (Path.isAbsolute(path) ? path : Path.join([cwd, path]));
+			var absolutePath:String = resolvePath(args[0]);
 
 			try
 			{
@@ -92,8 +89,7 @@ class FileSystemBridge
 		webview.bind('fsIsDirectory', (seq, req, _) ->
 		{
 			var args:Array<String> = Json.parse(req);
-			var path:String = args[0].replace('/', '\\');
-			var absolutePath:String = Path.isAbsolute(path) ? path : Path.join([cwd, path]);
+			var absolutePath:String = resolvePath(args[0]);
 			var isDir:Bool = FileSystem.exists(absolutePath) && FileSystem.isDirectory(absolutePath);
 			webview.resolve(seq, 0, Json.stringify(isDir));
 		}, null);
@@ -101,8 +97,7 @@ class FileSystemBridge
 		webview.bind('fsMkdir', (seq, req, _) ->
 		{
 			var args:Array<String> = Json.parse(req);
-			var path:String = args[0].replace('/', '\\');
-			var absolutePath:String = Path.isAbsolute(path) ? path : Path.join([cwd, path]);
+			var absolutePath:String = resolvePath(args[0]);
 
 			try
 			{
@@ -118,9 +113,8 @@ class FileSystemBridge
 		webview.bind('fsDelete', (seq, req, _) ->
 		{
 			var args:Array<String> = Json.parse(req);
-			var path:String = args[0].replace('/', '\\');
+			var absolutePath:String = resolvePath(args[0]);
 			var recursive:Bool = args.length > 1 ? args[1] == 'true' : false;
-			var absolutePath:String = Path.isAbsolute(path) ? path : Path.join([cwd, path]);
 
 			try
 			{
@@ -146,10 +140,8 @@ class FileSystemBridge
 		webview.bind('fsRename', (seq, req, _) ->
 		{
 			var args:Array<String> = Json.parse(req);
-			var oldPath:String = args[0].replace('/', '\\');
-			var newPath:String = args[1].replace('/', '\\');
-			var oldAbsolute:String = Path.isAbsolute(oldPath) ? oldPath : Path.join([cwd, oldPath]);
-			var newAbsolute:String = Path.isAbsolute(newPath) ? newPath : Path.join([cwd, newPath]);
+			var oldAbsolute:String = resolvePath(args[0]);
+			var newAbsolute:String = resolvePath(args[1]);
 
 			try
 			{
@@ -174,5 +166,11 @@ class FileSystemBridge
 				FileSystem.deleteFile(fullPath);
 		}
 		FileSystem.deleteDirectory(path);
+	}
+
+	private static function resolvePath(path:String):String
+	{
+		path = path.applyBackslashes();
+		return Path.isAbsolute(path) ? path : Path.join([cwd, path]);
 	}
 }

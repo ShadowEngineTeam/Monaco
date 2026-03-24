@@ -61,8 +61,13 @@ function toRelativePath(uri) {
         const relative = uri.path.replace(new RegExp(`^${WORKSPACE_PATH}/?`), '');
         return relative === '' ? '.' : relative;
     }
-    // external absolute path (stdlib, libraries) — pass through directly
-    return uri.fsPath;
+
+    const fsPath = uri.fsPath;
+    if (fsPath.startsWith('/') && fsPath.indexOf('/', 1) === -1) {
+        return fsPath.slice(1);
+    }
+
+    return fsPath;
 }
 
 function createDiskProvider() {

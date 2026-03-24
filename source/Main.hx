@@ -10,19 +10,24 @@ import sys.thread.Thread;
 #if windows
 @:cppInclude("windows.h")
 #end
+@:cppNamespaceCode('
+static volatile sig_atomic_t shouldExit = 0;
+')
 class Main
 {
 	public static function main()
 	{
 		Util.initCustomTrace();
 
-        // If you ctrl+c on console while the thing is running
-        // Then the thing will die cuz server + language server process didn't close
-        // These make sure they always close. Both are supposed to be DIFFERENT solutions the SAME THING 
-        // But for some reason they only do their job when BOTH are implemented
-        // So do NOT ever think of getting rid of one.
+		// If you ctrl+c on console while the thing is running
+		// Then the thing will die cuz server + language server process didn't close
+		// These make sure they always close. Both are supposed to be DIFFERENT solutions the SAME THING
+		// But for some reason they only do their job when BOTH are implemented
+		// So do NOT ever think of getting rid of one.
 		Main.registerSignalHandlers();
-        Main.startSafeExitThread();
+		#if windows
+		Main.startSafeExitThread();
+		#end
 
 		Main.loadMonaco();
 	}
@@ -36,35 +41,43 @@ class Main
 		MonacoLoader.load(true, cwd, hxml, name);
 	}
 
-    private static function startSafeExitThread():Void
-    {
-        Thread.create(() ->
+	private static function startSafeExitThread():Void
+	{
+		Thread.create(() ->
 		{
 			try
 			{
 				while (true)
+				{
 					Sys.stdin().readByte();
+					if (!MonacoLoader.running.load())
+						break;
+				}
 			}
 			catch (e)
 			{
-				MonacoLoader.cleanup();
-				Sys.exit(0);
+				if (MonacoLoader.running.load())
+				{
+					MonacoLoader.webview.dispatch((_, _) ->
+					{
+						MonacoLoader.cleanup();
+						Sys.exit(0);
+					}, null);
+				}
 			}
 		});
-    }
+	}
 
 	private static function registerSignalHandlers():Void
 	{
 		untyped __cpp__('
             struct SH {
                 static void handle(int) {
-                    monaco::MonacoLoader_obj::cleanup();
-                    ::exit(0);
+                    shouldExit = 1;
                 }
                 #ifdef _WIN32
                 static BOOL WINAPI console(DWORD) {
-                    monaco::MonacoLoader_obj::cleanup();
-                    ::exit(0);
+                    shouldExit = 1;
                     return TRUE;
                 }
                 #endif
@@ -76,5 +89,26 @@ class Main
             ::SetConsoleCtrlHandler(SH::console, TRUE);
             #endif
         ');
+
+		Thread.create(() ->
+		{
+			while (true)
+			{
+				if (untyped __cpp__('shouldExit'))
+				{
+					if (MonacoLoader.running.load() && MonacoLoader.webview != null)
+					{
+						MonacoLoader.webview.dispatch((_, _) ->
+						{
+							MonacoLoader.cleanup(false);
+							Sys.exit(0);
+						}, null);
+					}
+					break;
+				}
+
+				Sys.sleep(0.05);
+			}
+		});
 	}
 }
