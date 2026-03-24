@@ -1,0 +1,2164 @@
+import { t as ge } from "./_commonjsHelpers-SlA0cpQf.js";
+var oe = { exports: {} }, _e = oe.exports, pe;
+function ye() {
+	return pe || (pe = 1, (function(V, ue) {
+		(function(H, z) {
+			V.exports = z();
+		})(_e, (() => (() => {
+			var H = {
+				185: (M, r) => {
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.UseOnigurumaFindOptions = r.DebugFlags = void 0, r.DebugFlags = { InDebugMode: typeof process < "u" && !!{}.VSCODE_TEXTMATE_DEBUG }, r.UseOnigurumaFindOptions = !1;
+				},
+				151: (M, r, E) => {
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.applyStateStackDiff = r.diffStateStacksRefEq = void 0;
+					const y = E(752);
+					r.diffStateStacksRefEq = function(S, R) {
+						let m = 0;
+						const o = [];
+						let h = S, C = R;
+						for (; h !== C;) h && (!C || h.depth >= C.depth) ? (m++, h = h.parent) : (o.push(C.toStateStackFrame()), C = C.parent);
+						return {
+							pops: m,
+							newFrames: o.reverse()
+						};
+					}, r.applyStateStackDiff = function(S, R) {
+						let m = S;
+						for (let o = 0; o < R.pops; o++) m = m.parent;
+						for (const o of R.newFrames) m = y.StateStackImpl.pushFrame(m, o);
+						return m;
+					};
+				},
+				490: (M, r) => {
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.toOptionalTokenType = r.EncodedTokenAttributes = r.FontAttribute = void 0;
+					class E {
+						constructor(R, m, o) {
+							this.fontFamily = R, this.fontSize = m, this.lineHeight = o;
+						}
+						static _getKey(R, m, o) {
+							return `${R}|${m}|${o}`;
+						}
+						static _get(R, m, o) {
+							const h = this._getKey(R, m, o);
+							let C = this._map.get(h);
+							return C || (C = new E(R, m, o), this._map.set(h, C)), C;
+						}
+						static from(R, m, o) {
+							return new E(R, m, o);
+						}
+						with(R) {
+							return R ? E._get(R.fontFamily || this.fontFamily, R.fontSize || this.fontSize, R.lineHeight || this.lineHeight) : this;
+						}
+					}
+					var y;
+					r.FontAttribute = E, E._map = /* @__PURE__ */ new Map(), (y = r.EncodedTokenAttributes || (r.EncodedTokenAttributes = {})).toBinaryStr = function(S) {
+						return S.toString(2).padStart(32, "0");
+					}, y.print = function(S) {
+						const R = y.getLanguageId(S), m = y.getTokenType(S), o = y.getFontStyle(S), h = y.getForeground(S), C = y.getBackground(S);
+						console.log({
+							languageId: R,
+							tokenType: m,
+							fontStyle: o,
+							foreground: h,
+							background: C
+						});
+					}, y.getLanguageId = function(S) {
+						return (255 & S) >>> 0;
+					}, y.getTokenType = function(S) {
+						return (768 & S) >>> 8;
+					}, y.containsBalancedBrackets = function(S) {
+						return !!(1024 & S);
+					}, y.getFontStyle = function(S) {
+						return (30720 & S) >>> 11;
+					}, y.getForeground = function(S) {
+						return (16744448 & S) >>> 15;
+					}, y.getBackground = function(S) {
+						return (4278190080 & S) >>> 24;
+					}, y.set = function(S, R, m, o, h, C, u) {
+						let b = y.getLanguageId(S), A = y.getTokenType(S), _ = y.containsBalancedBrackets(S) ? 1 : 0, k = y.getFontStyle(S), c = y.getForeground(S), l = y.getBackground(S);
+						return R !== 0 && (b = R), m !== 8 && (A = m), o !== null && (_ = o ? 1 : 0), h !== -1 && (k = h), C !== 0 && (c = C), u !== 0 && (l = u), (b | A << 8 | _ << 10 | k << 11 | c << 15 | l << 24) >>> 0;
+					}, r.toOptionalTokenType = function(S) {
+						return S;
+					};
+				},
+				214: (M, r, E) => {
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.BasicScopeAttributesProvider = r.BasicScopeAttributes = void 0;
+					const y = E(807);
+					class S {
+						constructor(h, C) {
+							this.languageId = h, this.tokenType = C;
+						}
+					}
+					r.BasicScopeAttributes = S;
+					class R {
+						constructor(h, C) {
+							this._getBasicScopeAttributes = new y.CachedFn(((u) => new S(this._scopeToLanguage(u), this._toStandardTokenType(u)))), this._defaultAttributes = new S(h, 8), this._embeddedLanguagesMatcher = new m(Object.entries(C || {}));
+						}
+						getDefaultAttributes() {
+							return this._defaultAttributes;
+						}
+						getBasicScopeAttributes(h) {
+							return h === null ? R._NULL_SCOPE_METADATA : this._getBasicScopeAttributes.get(h);
+						}
+						_scopeToLanguage(h) {
+							return this._embeddedLanguagesMatcher.match(h) || 0;
+						}
+						_toStandardTokenType(h) {
+							const C = h.match(R.STANDARD_TOKEN_TYPE_REGEXP);
+							if (!C) return 8;
+							switch (C[1]) {
+								case "comment": return 1;
+								case "string": return 2;
+								case "regex": return 3;
+								case "meta.embedded": return 0;
+							}
+							throw new Error("Unexpected match for standard token type!");
+						}
+					}
+					r.BasicScopeAttributesProvider = R, R._NULL_SCOPE_METADATA = new S(0, 0), R.STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
+					class m {
+						constructor(h) {
+							if (h.length === 0) this.values = null, this.scopesRegExp = null;
+							else {
+								this.values = new Map(h);
+								const C = h.map((([u, b]) => y.escapeRegExpCharacters(u)));
+								C.sort(), C.reverse(), this.scopesRegExp = new RegExp(`^((${C.join(")|(")}))($|\\.)`, "");
+							}
+						}
+						match(h) {
+							if (!this.scopesRegExp) return;
+							const C = h.match(this.scopesRegExp);
+							return C ? this.values.get(C[1]) : void 0;
+						}
+					}
+				},
+				929: (M, r, E) => {
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.LineFonts = r.FontInfo = r.LineTokens = r.BalancedBracketSelectors = r.StateStackImpl = r.AttributedScopeStack = r.Grammar = r.createGrammar = void 0;
+					const y = E(185), S = E(490), R = E(916), m = E(810), o = E(666), h = E(63), C = E(807), u = E(214), b = E(398);
+					function A(g, t, i, d, p) {
+						const x = R.createMatchers(t, _), w = o.RuleFactory.getCompiledRuleId(i, d, p.repository);
+						for (const v of x) g.push({
+							debugSelector: t,
+							matcher: v.matcher,
+							ruleId: w,
+							grammar: p,
+							priority: v.priority
+						});
+					}
+					function _(g, t) {
+						if (t.length < g.length) return !1;
+						let i = 0;
+						return g.every(((d) => {
+							for (let p = i; p < t.length; p++) if (k(t[p], d)) return i = p + 1, !0;
+							return !1;
+						}));
+					}
+					function k(g, t) {
+						if (!g) return !1;
+						if (g === t) return !0;
+						const i = t.length;
+						return g.length > i && g.substr(0, i) === t && g[i] === ".";
+					}
+					r.createGrammar = function(g, t, i, d, p, x, w, v) {
+						return new c(g, t, i, d, p, x, w, v);
+					};
+					class c {
+						constructor(t, i, d, p, x, w, v, P) {
+							if (this._rootScopeName = t, this.balancedBracketSelectors = w, this._onigLib = P, this._basicScopeAttributesProvider = new u.BasicScopeAttributesProvider(d, p), this._rootId = -1, this._lastRuleId = 0, this._ruleId2desc = [null], this._includedGrammars = {}, this._grammarRepository = v, this._grammar = l(i, null), this._injections = null, this._tokenTypeMatchers = [], x) for (const O of Object.keys(x)) {
+								const L = R.createMatchers(O, _);
+								for (const D of L) this._tokenTypeMatchers.push({
+									matcher: D.matcher,
+									type: x[O]
+								});
+							}
+						}
+						get themeProvider() {
+							return this._grammarRepository;
+						}
+						dispose() {
+							for (const t of this._ruleId2desc) t && t.dispose();
+						}
+						createOnigScanner(t) {
+							return this._onigLib.createOnigScanner(t);
+						}
+						createOnigString(t) {
+							return this._onigLib.createOnigString(t);
+						}
+						getMetadataForScope(t) {
+							return this._basicScopeAttributesProvider.getBasicScopeAttributes(t);
+						}
+						_collectInjections() {
+							const t = [], i = this._rootScopeName, d = ((p) => p === this._rootScopeName ? this._grammar : this.getExternalGrammar(p))(i);
+							if (d) {
+								const p = d.injections;
+								if (p) for (let w in p) A(t, w, p[w], this, d);
+								const x = this._grammarRepository.injections(i);
+								x && x.forEach(((w) => {
+									const v = this.getExternalGrammar(w);
+									if (v) {
+										const P = v.injectionSelector;
+										P && A(t, P, v, this, v);
+									}
+								}));
+							}
+							return t.sort(((p, x) => p.priority - x.priority)), t;
+						}
+						getInjections() {
+							if (this._injections === null && (this._injections = this._collectInjections(), y.DebugFlags.InDebugMode && this._injections.length > 0)) {
+								console.log(`Grammar ${this._rootScopeName} contains the following injections:`);
+								for (const t of this._injections) console.log(`  - ${t.debugSelector}`);
+							}
+							return this._injections;
+						}
+						registerRule(t) {
+							const i = ++this._lastRuleId, d = t(o.ruleIdFromNumber(i));
+							return this._ruleId2desc[i] = d, d;
+						}
+						getRule(t) {
+							return this._ruleId2desc[o.ruleIdToNumber(t)];
+						}
+						getExternalGrammar(t, i) {
+							if (this._includedGrammars[t]) return this._includedGrammars[t];
+							if (this._grammarRepository) {
+								const d = this._grammarRepository.lookup(t);
+								if (d) return this._includedGrammars[t] = l(d, i && i.$base), this._includedGrammars[t];
+							}
+						}
+						tokenizeLine(t, i, d = 0) {
+							const p = this._tokenize(t, i, !1, d);
+							return {
+								tokens: p.lineTokens.getResult(p.ruleStack, p.lineLength),
+								ruleStack: p.ruleStack,
+								stoppedEarly: p.stoppedEarly,
+								fonts: p.lineFonts.getResult()
+							};
+						}
+						tokenizeLine2(t, i, d = 0) {
+							const p = this._tokenize(t, i, !0, d);
+							return {
+								tokens: p.lineTokens.getBinaryResult(p.ruleStack, p.lineLength),
+								ruleStack: p.ruleStack,
+								stoppedEarly: p.stoppedEarly,
+								fonts: p.lineFonts.getResult()
+							};
+						}
+						_tokenize(t, i, d, p) {
+							let x;
+							if (this._rootId === -1 && (this._rootId = o.RuleFactory.getCompiledRuleId(this._grammar.repository.$self, this, this._grammar.repository), this.getInjections()), i && i !== e.NULL) x = !1, i.reset();
+							else {
+								x = !0;
+								const D = this._basicScopeAttributesProvider.getDefaultAttributes(), G = this.themeProvider.getDefaults(), j = S.EncodedTokenAttributes.set(0, D.languageId, D.tokenType, null, G.fontStyle, G.foregroundId, G.backgroundId), B = S.FontAttribute.from(G.fontFamily, G.fontSize, G.lineHeight), F = this.getRule(this._rootId).getName(null, null);
+								let $;
+								$ = F ? s.createRootAndLookUpScopeName(F, j, B, this) : s.createRoot("unknown", j, B), i = new e(null, this._rootId, -1, -1, !1, null, $, $);
+							}
+							t += `
+`;
+							const w = this.createOnigString(t), v = w.content.length, P = new n(d, t, this._tokenTypeMatchers, this.balancedBracketSelectors), O = new f(), L = b._tokenizeString(this, w, x, 0, i, P, O, !0, p);
+							return m.disposeOnigString(w), {
+								lineLength: v,
+								lineTokens: P,
+								lineFonts: O,
+								ruleStack: L.stack,
+								stoppedEarly: L.stoppedEarly
+							};
+						}
+					}
+					function l(g, t) {
+						return (g = C.clone(g)).repository = g.repository || {}, g.repository.$self = {
+							$vscodeTextmateLocation: g.$vscodeTextmateLocation,
+							patterns: g.patterns,
+							name: g.scopeName
+						}, g.repository.$base = t || g.repository.$self, g;
+					}
+					r.Grammar = c;
+					class s {
+						constructor(t, i, d, p, x) {
+							this.parent = t, this.scopePath = i, this.tokenAttributes = d, this.fontAttributes = p, this.styleAttributes = x;
+						}
+						static fromExtension(t, i) {
+							let d = t, p = t?.scopePath ?? null;
+							for (const x of i) p = h.ScopeStack.push(p, x.scopeNames), d = new s(d, p, x.encodedTokenAttributes, null, null);
+							return d;
+						}
+						static createRoot(t, i, d) {
+							return new s(null, new h.ScopeStack(null, t), i, d, null);
+						}
+						static createRootAndLookUpScopeName(t, i, d, p) {
+							const x = p.getMetadataForScope(t), w = new h.ScopeStack(null, t), v = p.themeProvider.themeMatch(w);
+							return new s(null, w, s.mergeAttributes(i, x, v), d.with(v), v);
+						}
+						get scopeName() {
+							return this.scopePath.scopeName;
+						}
+						toString() {
+							return this.getScopeNames().join(" ");
+						}
+						equals(t) {
+							return s.equals(this, t);
+						}
+						static equals(t, i) {
+							for (;;) {
+								if (t === i || !t && !i) return !0;
+								if (!t || !i || t.scopeName !== i.scopeName || t.tokenAttributes !== i.tokenAttributes) return !1;
+								t = t.parent, i = i.parent;
+							}
+						}
+						static mergeAttributes(t, i, d) {
+							let p = -1, x = 0, w = 0;
+							return d !== null && (p = d.fontStyle, x = d.foregroundId, w = d.backgroundId), S.EncodedTokenAttributes.set(t, i.languageId, i.tokenType, null, p, x, w);
+						}
+						pushAttributed(t, i) {
+							if (t === null) return this;
+							if (t.indexOf(" ") === -1) return s._pushAttributed(this, t, i);
+							const d = t.split(/ /g);
+							let p = this;
+							for (const x of d) p = s._pushAttributed(p, x, i);
+							return p;
+						}
+						static _pushAttributed(t, i, d) {
+							const p = d.getMetadataForScope(i), x = t.scopePath.push(i), w = d.themeProvider.themeMatch(x);
+							return new s(t, x, s.mergeAttributes(t.tokenAttributes, p, w), t.fontAttributes?.with(w) ?? null, w);
+						}
+						getScopeNames() {
+							return this.scopePath.getSegments();
+						}
+						getExtensionIfDefined(t) {
+							const i = [];
+							let d = this;
+							for (; d && d !== t;) i.push({
+								encodedTokenAttributes: d.tokenAttributes,
+								scopeNames: d.scopePath.getExtensionIfDefined(d.parent?.scopePath ?? null)
+							}), d = d.parent;
+							return d === t ? i.reverse() : void 0;
+						}
+					}
+					r.AttributedScopeStack = s;
+					class e {
+						constructor(t, i, d, p, x, w, v, P) {
+							this.parent = t, this.ruleId = i, this.beginRuleCapturedEOL = x, this.endRule = w, this.nameScopesList = v, this.contentNameScopesList = P, this._stackElementBrand = void 0, this.depth = this.parent ? this.parent.depth + 1 : 1, this._enterPos = d, this._anchorPos = p;
+						}
+						equals(t) {
+							return t !== null && e._equals(this, t);
+						}
+						static _equals(t, i) {
+							return t === i || !!this._structuralEquals(t, i) && s.equals(t.contentNameScopesList, i.contentNameScopesList);
+						}
+						static _structuralEquals(t, i) {
+							for (;;) {
+								if (t === i || !t && !i) return !0;
+								if (!t || !i || t.depth !== i.depth || t.ruleId !== i.ruleId || t.endRule !== i.endRule) return !1;
+								t = t.parent, i = i.parent;
+							}
+						}
+						clone() {
+							return this;
+						}
+						static _reset(t) {
+							for (; t;) t._enterPos = -1, t._anchorPos = -1, t = t.parent;
+						}
+						reset() {
+							e._reset(this);
+						}
+						pop() {
+							return this.parent;
+						}
+						safePop() {
+							return this.parent ? this.parent : this;
+						}
+						push(t, i, d, p, x, w, v) {
+							return new e(this, t, i, d, p, x, w, v);
+						}
+						getEnterPos() {
+							return this._enterPos;
+						}
+						getAnchorPos() {
+							return this._anchorPos;
+						}
+						getRule(t) {
+							return t.getRule(this.ruleId);
+						}
+						toString() {
+							const t = [];
+							return this._writeString(t, 0), "[" + t.join(",") + "]";
+						}
+						_writeString(t, i) {
+							return this.parent && (i = this.parent._writeString(t, i)), t[i++] = `(${this.ruleId}, ${this.nameScopesList?.toString()}, ${this.contentNameScopesList?.toString()})`, i;
+						}
+						withContentNameScopesList(t) {
+							return this.contentNameScopesList === t ? this : this.parent.push(this.ruleId, this._enterPos, this._anchorPos, this.beginRuleCapturedEOL, this.endRule, this.nameScopesList, t);
+						}
+						withEndRule(t) {
+							return this.endRule === t ? this : new e(this.parent, this.ruleId, this._enterPos, this._anchorPos, this.beginRuleCapturedEOL, t, this.nameScopesList, this.contentNameScopesList);
+						}
+						hasSameRuleAs(t) {
+							let i = this;
+							for (; i && i._enterPos === t._enterPos;) {
+								if (i.ruleId === t.ruleId) return !0;
+								i = i.parent;
+							}
+							return !1;
+						}
+						toStateStackFrame() {
+							return {
+								ruleId: o.ruleIdToNumber(this.ruleId),
+								beginRuleCapturedEOL: this.beginRuleCapturedEOL,
+								endRule: this.endRule,
+								nameScopesList: this.nameScopesList?.getExtensionIfDefined(this.parent?.nameScopesList ?? null) ?? [],
+								contentNameScopesList: this.contentNameScopesList?.getExtensionIfDefined(this.nameScopesList) ?? []
+							};
+						}
+						static pushFrame(t, i) {
+							const d = s.fromExtension(t?.nameScopesList ?? null, i.nameScopesList);
+							return new e(t, o.ruleIdFromNumber(i.ruleId), i.enterPos ?? -1, i.anchorPos ?? -1, i.beginRuleCapturedEOL, i.endRule, d, s.fromExtension(d, i.contentNameScopesList));
+						}
+					}
+					r.StateStackImpl = e, e.NULL = new e(null, 0, 0, 0, !1, null, null, null), r.BalancedBracketSelectors = class {
+						constructor(g, t) {
+							this.allowAny = !1, this.balancedBracketScopes = g.flatMap(((i) => i === "*" ? (this.allowAny = !0, []) : R.createMatchers(i, _).map(((d) => d.matcher)))), this.unbalancedBracketScopes = t.flatMap(((i) => R.createMatchers(i, _).map(((d) => d.matcher))));
+						}
+						get matchesAlways() {
+							return this.allowAny && this.unbalancedBracketScopes.length === 0;
+						}
+						get matchesNever() {
+							return this.balancedBracketScopes.length === 0 && !this.allowAny;
+						}
+						match(g) {
+							for (const t of this.unbalancedBracketScopes) if (t(g)) return !1;
+							for (const t of this.balancedBracketScopes) if (t(g)) return !0;
+							return this.allowAny;
+						}
+					};
+					class n {
+						constructor(t, i, d, p) {
+							this.balancedBracketSelectors = p, this._emitBinaryTokens = t, this._tokenTypeOverrides = d, y.DebugFlags.InDebugMode ? this._lineText = i : this._lineText = null, this._mergeConsecutiveTokensWithEqualMetadata = !C.containsRTL(i), this._tokens = [], this._binaryTokens = [], this._lastTokenEndIndex = 0;
+						}
+						produce(t, i) {
+							this.produceFromScopes(t.contentNameScopesList, i);
+						}
+						produceFromScopes(t, i) {
+							if (this._lastTokenEndIndex >= i) return;
+							if (this._emitBinaryTokens) {
+								let p = t?.tokenAttributes ?? 0, x = !1;
+								if (this.balancedBracketSelectors?.matchesAlways && (x = !0), this._tokenTypeOverrides.length > 0 || this.balancedBracketSelectors && !this.balancedBracketSelectors.matchesAlways && !this.balancedBracketSelectors.matchesNever) {
+									const w = t?.getScopeNames() ?? [];
+									for (const v of this._tokenTypeOverrides) v.matcher(w) && (p = S.EncodedTokenAttributes.set(p, 0, S.toOptionalTokenType(v.type), null, -1, 0, 0));
+									this.balancedBracketSelectors && (x = this.balancedBracketSelectors.match(w));
+								}
+								if (x && (p = S.EncodedTokenAttributes.set(p, 0, 8, x, -1, 0, 0)), this._mergeConsecutiveTokensWithEqualMetadata && this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 1] === p) return void (this._lastTokenEndIndex = i);
+								if (y.DebugFlags.InDebugMode) {
+									const w = t?.getScopeNames() ?? [];
+									console.log("  token: |" + this._lineText.substring(this._lastTokenEndIndex, i).replace(/\n$/, "\\n") + "|");
+									for (let v = 0; v < w.length; v++) console.log("      * " + w[v]);
+								}
+								this._binaryTokens.push(this._lastTokenEndIndex), this._binaryTokens.push(p), this._lastTokenEndIndex = i;
+								return;
+							}
+							const d = t?.getScopeNames() ?? [];
+							if (y.DebugFlags.InDebugMode) {
+								console.log("  token: |" + this._lineText.substring(this._lastTokenEndIndex, i).replace(/\n$/, "\\n") + "|");
+								for (let p = 0; p < d.length; p++) console.log("      * " + d[p]);
+							}
+							this._tokens.push({
+								startIndex: this._lastTokenEndIndex,
+								endIndex: i,
+								scopes: d
+							}), this._lastTokenEndIndex = i;
+						}
+						getResult(t, i) {
+							return this._tokens.length > 0 && this._tokens[this._tokens.length - 1].startIndex === i - 1 && this._tokens.pop(), this._tokens.length === 0 && (this._lastTokenEndIndex = -1, this.produce(t, i), this._tokens[this._tokens.length - 1].startIndex = 0), this._tokens;
+						}
+						getBinaryResult(t, i) {
+							this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 2] === i - 1 && (this._binaryTokens.pop(), this._binaryTokens.pop()), this._binaryTokens.length === 0 && (this._lastTokenEndIndex = -1, this.produce(t, i), this._binaryTokens[this._binaryTokens.length - 2] = 0);
+							const d = new Uint32Array(this._binaryTokens.length);
+							for (let p = 0, x = this._binaryTokens.length; p < x; p++) d[p] = this._binaryTokens[p];
+							return d;
+						}
+					}
+					r.LineTokens = n;
+					class a {
+						constructor(t, i, d, p, x) {
+							this.startIndex = t, this.endIndex = i, this.fontFamily = d, this.fontSizeMultiplier = p, this.lineHeightMultiplier = x;
+						}
+						optionsEqual(t) {
+							return this.fontFamily === t.fontFamily && this.fontSizeMultiplier === t.fontSizeMultiplier && this.lineHeightMultiplier === t.lineHeightMultiplier;
+						}
+					}
+					r.FontInfo = a;
+					class f {
+						constructor() {
+							this._fonts = [], this._lastIndex = 0;
+						}
+						produce(t, i) {
+							this.produceFromScopes(t.contentNameScopesList, i);
+						}
+						produceFromScopes(t, i) {
+							if (!t?.fontAttributes) return void (this._lastIndex = i);
+							const d = t.fontAttributes.fontFamily, p = t.fontAttributes.fontSize, x = t.fontAttributes.lineHeight;
+							if (!d && !p && !x) return void (this._lastIndex = i);
+							const w = new a(this._lastIndex, i, d, p, x), v = this._fonts[this._fonts.length - 1];
+							v && v.endIndex === this._lastIndex && v.optionsEqual(w) ? v.endIndex = w.endIndex : this._fonts.push(w), this._lastIndex = i;
+						}
+						getResult() {
+							return this._fonts;
+						}
+					}
+					r.LineFonts = f;
+				},
+				784: (M, r, E) => {
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.parseInclude = r.TopLevelRepositoryReference = r.TopLevelReference = r.RelativeReference = r.SelfReference = r.BaseReference = r.ScopeDependencyProcessor = r.ExternalReferenceCollector = r.TopLevelRepositoryRuleReference = r.TopLevelRuleReference = void 0;
+					const y = E(807);
+					class S {
+						constructor(e) {
+							this.scopeName = e;
+						}
+						toKey() {
+							return this.scopeName;
+						}
+					}
+					r.TopLevelRuleReference = S;
+					class R {
+						constructor(e, n) {
+							this.scopeName = e, this.ruleName = n;
+						}
+						toKey() {
+							return `${this.scopeName}#${this.ruleName}`;
+						}
+					}
+					r.TopLevelRepositoryRuleReference = R;
+					class m {
+						constructor() {
+							this._references = [], this._seenReferenceKeys = /* @__PURE__ */ new Set(), this.visitedRule = /* @__PURE__ */ new Set();
+						}
+						get references() {
+							return this._references;
+						}
+						add(e) {
+							const n = e.toKey();
+							this._seenReferenceKeys.has(n) || (this._seenReferenceKeys.add(n), this._references.push(e));
+						}
+					}
+					function o(s, e, n, a) {
+						const f = n.lookup(s.scopeName);
+						if (!f) {
+							if (s.scopeName === e) throw new Error(`No grammar provided for <${e}>`);
+							return;
+						}
+						const g = n.lookup(e);
+						s instanceof S ? C({
+							baseGrammar: g,
+							selfGrammar: f
+						}, a) : h(s.ruleName, {
+							baseGrammar: g,
+							selfGrammar: f,
+							repository: f.repository
+						}, a);
+						const t = n.injections(s.scopeName);
+						if (t) for (const i of t) a.add(new S(i));
+					}
+					function h(s, e, n) {
+						e.repository && e.repository[s] && u([e.repository[s]], e, n);
+					}
+					function C(s, e) {
+						s.selfGrammar.patterns && Array.isArray(s.selfGrammar.patterns) && u(s.selfGrammar.patterns, {
+							...s,
+							repository: s.selfGrammar.repository
+						}, e), s.selfGrammar.injections && u(Object.values(s.selfGrammar.injections), {
+							...s,
+							repository: s.selfGrammar.repository
+						}, e);
+					}
+					function u(s, e, n) {
+						for (const a of s) {
+							if (n.visitedRule.has(a)) continue;
+							n.visitedRule.add(a);
+							const f = a.repository ? y.mergeObjects({}, e.repository, a.repository) : e.repository;
+							Array.isArray(a.patterns) && u(a.patterns, {
+								...e,
+								repository: f
+							}, n);
+							const g = a.include;
+							if (!g) continue;
+							const t = l(g);
+							switch (t.kind) {
+								case 0:
+									C({
+										...e,
+										selfGrammar: e.baseGrammar
+									}, n);
+									break;
+								case 1:
+									C(e, n);
+									break;
+								case 2:
+									h(t.ruleName, {
+										...e,
+										repository: f
+									}, n);
+									break;
+								case 3:
+								case 4:
+									const i = t.scopeName === e.selfGrammar.scopeName ? e.selfGrammar : t.scopeName === e.baseGrammar.scopeName ? e.baseGrammar : void 0;
+									if (i) {
+										const d = {
+											baseGrammar: e.baseGrammar,
+											selfGrammar: i,
+											repository: f
+										};
+										t.kind === 4 ? h(t.ruleName, d, n) : C(d, n);
+									} else t.kind === 4 ? n.add(new R(t.scopeName, t.ruleName)) : n.add(new S(t.scopeName));
+							}
+						}
+					}
+					r.ExternalReferenceCollector = m, r.ScopeDependencyProcessor = class {
+						constructor(s, e) {
+							this.repo = s, this.initialScopeName = e, this.seenFullScopeRequests = /* @__PURE__ */ new Set(), this.seenPartialScopeRequests = /* @__PURE__ */ new Set(), this.seenFullScopeRequests.add(this.initialScopeName), this.Q = [new S(this.initialScopeName)];
+						}
+						processQueue() {
+							const s = this.Q;
+							this.Q = [];
+							const e = new m();
+							for (const n of s) o(n, this.initialScopeName, this.repo, e);
+							for (const n of e.references) if (n instanceof S) {
+								if (this.seenFullScopeRequests.has(n.scopeName)) continue;
+								this.seenFullScopeRequests.add(n.scopeName), this.Q.push(n);
+							} else {
+								if (this.seenFullScopeRequests.has(n.scopeName) || this.seenPartialScopeRequests.has(n.toKey())) continue;
+								this.seenPartialScopeRequests.add(n.toKey()), this.Q.push(n);
+							}
+						}
+					};
+					class b {
+						constructor() {
+							this.kind = 0;
+						}
+					}
+					r.BaseReference = b;
+					class A {
+						constructor() {
+							this.kind = 1;
+						}
+					}
+					r.SelfReference = A;
+					class _ {
+						constructor(e) {
+							this.ruleName = e, this.kind = 2;
+						}
+					}
+					r.RelativeReference = _;
+					class k {
+						constructor(e) {
+							this.scopeName = e, this.kind = 3;
+						}
+					}
+					r.TopLevelReference = k;
+					class c {
+						constructor(e, n) {
+							this.scopeName = e, this.ruleName = n, this.kind = 4;
+						}
+					}
+					function l(s) {
+						if (s === "$base") return new b();
+						if (s === "$self") return new A();
+						const e = s.indexOf("#");
+						return e === -1 ? new k(s) : e === 0 ? new _(s.substring(1)) : new c(s.substring(0, e), s.substring(e + 1));
+					}
+					r.TopLevelRepositoryReference = c, r.parseInclude = l;
+				},
+				752: function(M, r, E) {
+					var y = this && this.__createBinding || (Object.create ? function(R, m, o, h) {
+						h === void 0 && (h = o), Object.defineProperty(R, h, {
+							enumerable: !0,
+							get: function() {
+								return m[o];
+							}
+						});
+					} : function(R, m, o, h) {
+						h === void 0 && (h = o), R[h] = m[o];
+					}), S = this && this.__exportStar || function(R, m) {
+						for (var o in R) o === "default" || Object.prototype.hasOwnProperty.call(m, o) || y(m, R, o);
+					};
+					Object.defineProperty(r, "__esModule", { value: !0 }), S(E(929), r);
+				},
+				398: (M, r, E) => {
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.LocalStackElement = r._tokenizeString = void 0;
+					const y = E(185), S = E(810), R = E(666), m = E(807);
+					class o {
+						constructor(c, l) {
+							this.stack = c, this.stoppedEarly = l;
+						}
+					}
+					function h(k, c, l, s, e, n, a, f, g) {
+						const t = (v, P) => {
+							n.produce(v, P), a.produce(v, P);
+						}, i = c.content.length;
+						let d = !1, p = -1;
+						if (f) {
+							const v = (function(P, O, L, D, G, j, B) {
+								const F = (N, T) => {
+									j.produce(N, T), B.produce(N, T);
+								};
+								let $ = G.beginRuleCapturedEOL ? 0 : -1;
+								const I = [];
+								for (let N = G; N; N = N.pop()) {
+									const T = N.getRule(P);
+									T instanceof R.BeginWhileRule && I.push({
+										rule: T,
+										stack: N
+									});
+								}
+								for (let N = I.pop(); N; N = I.pop()) {
+									const { ruleScanner: T, findOptions: U } = u(N.rule, P, N.stack.endRule, L, D === $), W = T.findNextMatchSync(O, D, U);
+									if (y.DebugFlags.InDebugMode && (console.log("  scanning for while rule"), console.log(T.toString())), !W) {
+										y.DebugFlags.InDebugMode && console.log("  popping " + N.rule.debugName + " - " + N.rule.debugWhileRegExp), G = N.stack.pop();
+										break;
+									}
+									if (W.ruleId !== R.whileRuleId) {
+										G = N.stack.pop();
+										break;
+									}
+									W.captureIndices && W.captureIndices.length && (F(N.stack, W.captureIndices[0].start), A(P, O, L, N.stack, j, B, N.rule.whileCaptures, W.captureIndices), F(N.stack, W.captureIndices[0].end), $ = W.captureIndices[0].end, W.captureIndices[0].end > D && (D = W.captureIndices[0].end, L = !1));
+								}
+								return {
+									stack: G,
+									linePos: D,
+									anchorPosition: $,
+									isFirstLine: L
+								};
+							})(k, c, l, s, e, n, a);
+							e = v.stack, s = v.linePos, l = v.isFirstLine, p = v.anchorPosition;
+						}
+						const x = Date.now();
+						for (; !d;) {
+							if (g !== 0 && Date.now() - x > g) return new o(e, !0);
+							w();
+						}
+						return new o(e, !1);
+						function w() {
+							y.DebugFlags.InDebugMode && (console.log(""), console.log(`@@scanNext ${s}: |${c.content.substr(s).replace(/\n$/, "\\n")}|`));
+							const v = (function(D, G, j, B, F, $) {
+								const I = (function(J, X, ae, Y, K, ne) {
+									const Z = K.getRule(J), { ruleScanner: ee, findOptions: te } = C(Z, J, K.endRule, ae, Y === ne);
+									let Q = 0;
+									y.DebugFlags.InDebugMode && (Q = m.performanceNow());
+									const q = ee.findNextMatchSync(X, Y, te);
+									if (y.DebugFlags.InDebugMode) {
+										const se = m.performanceNow() - Q;
+										se > 5 && console.warn(`Rule ${Z.debugName} (${Z.id}) matching took ${se} against '${X}'`), console.log(`  scanning for (linePos: ${Y}, anchorPosition: ${ne})`), console.log(ee.toString()), q && console.log(`matched rule id: ${q.ruleId} from ${q.captureIndices[0].start} to ${q.captureIndices[0].end}`);
+									}
+									return q ? {
+										captureIndices: q.captureIndices,
+										matchedRuleId: q.ruleId
+									} : null;
+								})(D, G, j, B, F, $), N = D.getInjections();
+								if (N.length === 0) return I;
+								const T = (function(J, X, ae, Y, K, ne, Z) {
+									let ee, te = Number.MAX_VALUE, Q = null, q = 0;
+									const se = ne.contentNameScopesList.getScopeNames();
+									for (let ce = 0, fe = J.length; ce < fe; ce++) {
+										const re = J[ce];
+										if (!re.matcher(se)) continue;
+										const { ruleScanner: le, findOptions: me } = C(X.getRule(re.ruleId), X, null, Y, K === Z), ie = le.findNextMatchSync(ae, K, me);
+										if (!ie) continue;
+										y.DebugFlags.InDebugMode && (console.log(`  matched injection: ${re.debugSelector}`), console.log(le.toString()));
+										const he = ie.captureIndices[0].start;
+										if (!(he >= te) && (te = he, Q = ie.captureIndices, ee = ie.ruleId, q = re.priority, te === K)) break;
+									}
+									return Q ? {
+										priorityMatch: q === -1,
+										captureIndices: Q,
+										matchedRuleId: ee
+									} : null;
+								})(N, D, G, j, B, F, $);
+								if (!T) return I;
+								if (!I) return T;
+								const U = I.captureIndices[0].start, W = T.captureIndices[0].start;
+								return W < U || T.priorityMatch && W === U ? T : I;
+							})(k, c, l, s, e, p);
+							if (!v) return y.DebugFlags.InDebugMode && console.log("  no more matches."), t(e, i), void (d = !0);
+							const P = v.captureIndices, O = v.matchedRuleId, L = !!(P && P.length > 0) && P[0].end > s;
+							if (O === R.endRuleId) {
+								const D = e.getRule(k);
+								y.DebugFlags.InDebugMode && console.log("  popping " + D.debugName + " - " + D.debugEndRegExp), t(e, P[0].start), e = e.withContentNameScopesList(e.nameScopesList), A(k, c, l, e, n, a, D.endCaptures, P), t(e, P[0].end);
+								const G = e;
+								if (e = e.parent, p = G.getAnchorPos(), !L && G.getEnterPos() === s) return y.DebugFlags.InDebugMode && console.error("[1] - Grammar is in an endless loop - Grammar pushed & popped a rule without advancing"), t(e = G, i), void (d = !0);
+							} else {
+								const D = k.getRule(O);
+								t(e, P[0].start);
+								const G = e, j = D.getName(c.content, P), B = e.contentNameScopesList.pushAttributed(j, k);
+								if (e = e.push(O, s, p, P[0].end === i, null, B, B), D instanceof R.BeginEndRule) {
+									const F = D;
+									y.DebugFlags.InDebugMode && console.log("  pushing " + F.debugName + " - " + F.debugBeginRegExp), A(k, c, l, e, n, a, F.beginCaptures, P), t(e, P[0].end), p = P[0].end;
+									const $ = F.getContentName(c.content, P), I = B.pushAttributed($, k);
+									if (e = e.withContentNameScopesList(I), F.endHasBackReferences && (e = e.withEndRule(F.getEndWithResolvedBackReferences(c.content, P))), !L && G.hasSameRuleAs(e)) return y.DebugFlags.InDebugMode && console.error("[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing"), e = e.pop(), t(e, i), void (d = !0);
+								} else if (D instanceof R.BeginWhileRule) {
+									const F = D;
+									y.DebugFlags.InDebugMode && console.log("  pushing " + F.debugName), A(k, c, l, e, n, a, F.beginCaptures, P), t(e, P[0].end), p = P[0].end;
+									const $ = F.getContentName(c.content, P), I = B.pushAttributed($, k);
+									if (e = e.withContentNameScopesList(I), F.whileHasBackReferences && (e = e.withEndRule(F.getWhileWithResolvedBackReferences(c.content, P))), !L && G.hasSameRuleAs(e)) return y.DebugFlags.InDebugMode && console.error("[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing"), e = e.pop(), t(e, i), void (d = !0);
+								} else {
+									const F = D;
+									if (y.DebugFlags.InDebugMode && console.log("  matched " + F.debugName + " - " + F.debugMatchRegExp), A(k, c, l, e, n, a, F.captures, P), t(e, P[0].end), e = e.pop(), !L) return y.DebugFlags.InDebugMode && console.error("[4] - Grammar is in an endless loop - Grammar is not advancing, nor is it pushing/popping"), e = e.safePop(), t(e, i), void (d = !0);
+								}
+							}
+							P[0].end > s && (s = P[0].end, l = !1);
+						}
+					}
+					function C(k, c, l, s, e) {
+						return y.UseOnigurumaFindOptions ? {
+							ruleScanner: k.compile(c, l),
+							findOptions: b(s, e)
+						} : {
+							ruleScanner: k.compileAG(c, l, s, e),
+							findOptions: 0
+						};
+					}
+					function u(k, c, l, s, e) {
+						return y.UseOnigurumaFindOptions ? {
+							ruleScanner: k.compileWhile(c, l),
+							findOptions: b(s, e)
+						} : {
+							ruleScanner: k.compileWhileAG(c, l, s, e),
+							findOptions: 0
+						};
+					}
+					function b(k, c) {
+						let l = 0;
+						return k || (l |= 1), c || (l |= 4), l;
+					}
+					function A(k, c, l, s, e, n, a, f) {
+						const g = (w, v) => {
+							e.produceFromScopes(w, v), n.produceFromScopes(w, v);
+						}, t = (w, v) => {
+							e.produce(w, v), n.produce(w, v);
+						};
+						if (a.length === 0) return;
+						const i = c.content, d = Math.min(a.length, f.length), p = [], x = f[0].end;
+						for (let w = 0; w < d; w++) {
+							const v = a[w];
+							if (v === null) continue;
+							const P = f[w];
+							if (P.length === 0) continue;
+							if (P.start > x) break;
+							for (; p.length > 0 && p[p.length - 1].endPos <= P.start;) g(p[p.length - 1].scopes, p[p.length - 1].endPos), p.pop();
+							if (p.length > 0 ? g(p[p.length - 1].scopes, P.start) : t(s, P.start), v.retokenizeCapturedWithRuleId) {
+								const L = v.getName(i, f), D = s.contentNameScopesList.pushAttributed(L, k), G = v.getContentName(i, f), j = D.pushAttributed(G, k), B = s.push(v.retokenizeCapturedWithRuleId, P.start, -1, !1, null, D, j), F = k.createOnigString(i.substring(0, P.end));
+								h(k, F, l && P.start === 0, P.start, B, e, n, !1, 0), S.disposeOnigString(F);
+								continue;
+							}
+							const O = v.getName(i, f);
+							if (O !== null) {
+								const L = (p.length > 0 ? p[p.length - 1].scopes : s.contentNameScopesList).pushAttributed(O, k);
+								p.push(new _(L, P.end));
+							}
+						}
+						for (; p.length > 0;) g(p[p.length - 1].scopes, p[p.length - 1].endPos), p.pop();
+					}
+					r._tokenizeString = h;
+					class _ {
+						constructor(c, l) {
+							this.scopes = c, this.endPos = l;
+						}
+					}
+					r.LocalStackElement = _;
+				},
+				726: (M, r) => {
+					function E(m, o) {
+						throw new Error("Near offset " + m.pos + ": " + o + " ~~~" + m.source.substr(m.pos, 50) + "~~~");
+					}
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.parseJSON = void 0, r.parseJSON = function(m, o, h) {
+						let C = new y(m), u = new S(), b = 0, A = null, _ = [], k = [];
+						function c() {
+							_.push(b), k.push(A);
+						}
+						function l() {
+							b = _.pop(), A = k.pop();
+						}
+						function s(e) {
+							E(C, e);
+						}
+						for (; R(C, u);) {
+							if (b === 0) {
+								if (A !== null && s("too many constructs in root"), u.type === 3) {
+									A = {}, h && (A.$vscodeTextmateLocation = u.toLocation(o)), c(), b = 1;
+									continue;
+								}
+								if (u.type === 2) {
+									A = [], c(), b = 4;
+									continue;
+								}
+								s("unexpected token in root");
+							}
+							if (b === 2) {
+								if (u.type === 5) {
+									l();
+									continue;
+								}
+								if (u.type === 7) {
+									b = 3;
+									continue;
+								}
+								s("expected , or }");
+							}
+							if (b === 1 || b === 3) {
+								if (b === 1 && u.type === 5) {
+									l();
+									continue;
+								}
+								if (u.type === 1) {
+									let e = u.value;
+									if (R(C, u) && u.type === 6 || s("expected colon"), R(C, u) || s("expected value"), b = 2, u.type === 1) {
+										A[e] = u.value;
+										continue;
+									}
+									if (u.type === 8) {
+										A[e] = null;
+										continue;
+									}
+									if (u.type === 9) {
+										A[e] = !0;
+										continue;
+									}
+									if (u.type === 10) {
+										A[e] = !1;
+										continue;
+									}
+									if (u.type === 11) {
+										A[e] = parseFloat(u.value);
+										continue;
+									}
+									if (u.type === 2) {
+										let n = [];
+										A[e] = n, c(), b = 4, A = n;
+										continue;
+									}
+									if (u.type === 3) {
+										let n = {};
+										h && (n.$vscodeTextmateLocation = u.toLocation(o)), A[e] = n, c(), b = 1, A = n;
+										continue;
+									}
+								}
+								s("unexpected token in dict");
+							}
+							if (b === 5) {
+								if (u.type === 4) {
+									l();
+									continue;
+								}
+								if (u.type === 7) {
+									b = 6;
+									continue;
+								}
+								s("expected , or ]");
+							}
+							if (b === 4 || b === 6) {
+								if (b === 4 && u.type === 4) {
+									l();
+									continue;
+								}
+								if (b = 5, u.type === 1) {
+									A.push(u.value);
+									continue;
+								}
+								if (u.type === 8) {
+									A.push(null);
+									continue;
+								}
+								if (u.type === 9) {
+									A.push(!0);
+									continue;
+								}
+								if (u.type === 10) {
+									A.push(!1);
+									continue;
+								}
+								if (u.type === 11) {
+									A.push(parseFloat(u.value));
+									continue;
+								}
+								if (u.type === 2) {
+									let e = [];
+									A.push(e), c(), b = 4, A = e;
+									continue;
+								}
+								if (u.type === 3) {
+									let e = {};
+									h && (e.$vscodeTextmateLocation = u.toLocation(o)), A.push(e), c(), b = 1, A = e;
+									continue;
+								}
+								s("unexpected token in array");
+							}
+							s("unknown state");
+						}
+						return k.length !== 0 && s("unclosed constructs"), A;
+					};
+					class y {
+						constructor(o) {
+							this.source = o, this.pos = 0, this.len = o.length, this.line = 1, this.char = 0;
+						}
+					}
+					class S {
+						constructor() {
+							this.value = null, this.type = 0, this.offset = -1, this.len = -1, this.line = -1, this.char = -1;
+						}
+						toLocation(o) {
+							return {
+								filename: o,
+								line: this.line,
+								char: this.char
+							};
+						}
+					}
+					function R(m, o) {
+						o.value = null, o.type = 0, o.offset = -1, o.len = -1, o.line = -1, o.char = -1;
+						let h, C = m.source, u = m.pos, b = m.len, A = m.line, _ = m.char;
+						for (;;) {
+							if (u >= b) return !1;
+							if (h = C.charCodeAt(u), h !== 32 && h !== 9 && h !== 13) {
+								if (h !== 10) break;
+								u++, A++, _ = 0;
+							} else u++, _++;
+						}
+						if (o.offset = u, o.line = A, o.char = _, h === 34) {
+							for (o.type = 1, u++, _++;;) {
+								if (u >= b) return !1;
+								if (h = C.charCodeAt(u), u++, _++, h !== 92) {
+									if (h === 34) break;
+								} else u++, _++;
+							}
+							o.value = C.substring(o.offset + 1, u - 1).replace(/\\u([0-9A-Fa-f]{4})/g, ((k, c) => String.fromCodePoint(parseInt(c, 16)))).replace(/\\(.)/g, ((k, c) => {
+								switch (c) {
+									case "\"": return "\"";
+									case "\\": return "\\";
+									case "/": return "/";
+									case "b": return "\b";
+									case "f": return "\f";
+									case "n": return `
+`;
+									case "r": return "\r";
+									case "t": return "	";
+									default: E(m, "invalid escape sequence");
+								}
+								throw new Error("unreachable");
+							}));
+						} else if (h === 91) o.type = 2, u++, _++;
+						else if (h === 123) o.type = 3, u++, _++;
+						else if (h === 93) o.type = 4, u++, _++;
+						else if (h === 125) o.type = 5, u++, _++;
+						else if (h === 58) o.type = 6, u++, _++;
+						else if (h === 44) o.type = 7, u++, _++;
+						else if (h === 110) {
+							if (o.type = 8, u++, _++, h = C.charCodeAt(u), h !== 117 || (u++, _++, h = C.charCodeAt(u), h !== 108) || (u++, _++, h = C.charCodeAt(u), h !== 108)) return !1;
+							u++, _++;
+						} else if (h === 116) {
+							if (o.type = 9, u++, _++, h = C.charCodeAt(u), h !== 114 || (u++, _++, h = C.charCodeAt(u), h !== 117) || (u++, _++, h = C.charCodeAt(u), h !== 101)) return !1;
+							u++, _++;
+						} else if (h === 102) {
+							if (o.type = 10, u++, _++, h = C.charCodeAt(u), h !== 97 || (u++, _++, h = C.charCodeAt(u), h !== 108) || (u++, _++, h = C.charCodeAt(u), h !== 115) || (u++, _++, h = C.charCodeAt(u), h !== 101)) return !1;
+							u++, _++;
+						} else for (o.type = 11;;) {
+							if (u >= b) return !1;
+							if (h = C.charCodeAt(u), !(h === 46 || h >= 48 && h <= 57 || h === 101 || h === 69 || h === 45 || h === 43)) break;
+							u++, _++;
+						}
+						return o.len = u - o.offset, o.value === null && (o.value = C.substr(o.offset, o.len)), m.pos = u, m.line = A, m.char = _, !0;
+					}
+				},
+				625: function(M, r, E) {
+					var y = this && this.__createBinding || (Object.create ? function(b, A, _, k) {
+						k === void 0 && (k = _), Object.defineProperty(b, k, {
+							enumerable: !0,
+							get: function() {
+								return A[_];
+							}
+						});
+					} : function(b, A, _, k) {
+						k === void 0 && (k = _), b[k] = A[_];
+					}), S = this && this.__exportStar || function(b, A) {
+						for (var _ in b) _ === "default" || Object.prototype.hasOwnProperty.call(A, _) || y(A, b, _);
+					};
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.applyStateStackDiff = r.diffStateStacksRefEq = r.parseRawGrammar = r.INITIAL = r.Registry = void 0;
+					const R = E(752), m = E(150), o = E(583), h = E(63), C = E(784), u = E(151);
+					Object.defineProperty(r, "applyStateStackDiff", {
+						enumerable: !0,
+						get: function() {
+							return u.applyStateStackDiff;
+						}
+					}), Object.defineProperty(r, "diffStateStacksRefEq", {
+						enumerable: !0,
+						get: function() {
+							return u.diffStateStacksRefEq;
+						}
+					}), S(E(810), r), r.Registry = class {
+						constructor(b) {
+							this._options = b, this._syncRegistry = new o.SyncRegistry(h.Theme.createFromRawTheme(b.theme, b.colorMap), b.onigLib), this._ensureGrammarCache = /* @__PURE__ */ new Map();
+						}
+						dispose() {
+							this._syncRegistry.dispose();
+						}
+						setTheme(b, A) {
+							this._syncRegistry.setTheme(h.Theme.createFromRawTheme(b, A));
+						}
+						getColorMap() {
+							return this._syncRegistry.getColorMap();
+						}
+						loadGrammarWithEmbeddedLanguages(b, A, _) {
+							return this.loadGrammarWithConfiguration(b, A, { embeddedLanguages: _ });
+						}
+						loadGrammarWithConfiguration(b, A, _) {
+							return this._loadGrammar(b, A, _.embeddedLanguages, _.tokenTypes, new R.BalancedBracketSelectors(_.balancedBracketSelectors || [], _.unbalancedBracketSelectors || []));
+						}
+						loadGrammar(b) {
+							return this._loadGrammar(b, 0, null, null, null);
+						}
+						async _loadGrammar(b, A, _, k, c) {
+							const l = new C.ScopeDependencyProcessor(this._syncRegistry, b);
+							for (; l.Q.length > 0;) await Promise.all(l.Q.map(((s) => this._loadSingleGrammar(s.scopeName)))), l.processQueue();
+							return this._grammarForScopeName(b, A, _, k, c);
+						}
+						async _loadSingleGrammar(b) {
+							return this._ensureGrammarCache.has(b) || this._ensureGrammarCache.set(b, this._doLoadSingleGrammar(b)), this._ensureGrammarCache.get(b);
+						}
+						async _doLoadSingleGrammar(b) {
+							const A = await this._options.loadGrammar(b);
+							if (A) {
+								const _ = typeof this._options.getInjections == "function" ? this._options.getInjections(b) : void 0;
+								this._syncRegistry.addGrammar(A, _);
+							}
+						}
+						async addGrammar(b, A = [], _ = 0, k = null) {
+							return this._syncRegistry.addGrammar(b, A), await this._grammarForScopeName(b.scopeName, _, k);
+						}
+						_grammarForScopeName(b, A = 0, _ = null, k = null, c = null) {
+							return this._syncRegistry.grammarForScopeName(b, A, _, k, c);
+						}
+					}, r.INITIAL = R.StateStackImpl.NULL, r.parseRawGrammar = m.parseRawGrammar;
+				},
+				916: (M, r) => {
+					function E(y) {
+						return !!y && !!y.match(/[\w\.:]+/);
+					}
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.createMatchers = void 0, r.createMatchers = function(y, S) {
+						const R = [], m = (function(u) {
+							let b = /([LR]:|[\w\.:][\w\.:\-]*|[\,\|\-\(\)])/g, A = b.exec(u);
+							return { next: () => {
+								if (!A) return null;
+								const _ = A[0];
+								return A = b.exec(u), _;
+							} };
+						})(y);
+						let o = m.next();
+						for (; o !== null;) {
+							let u = 0;
+							if (o.length === 2 && o.charAt(1) === ":") {
+								switch (o.charAt(0)) {
+									case "R":
+										u = 1;
+										break;
+									case "L":
+										u = -1;
+										break;
+									default: console.log(`Unknown priority ${o} in scope selector`);
+								}
+								o = m.next();
+							}
+							let b = C();
+							if (R.push({
+								matcher: b,
+								priority: u
+							}), o !== ",") break;
+							o = m.next();
+						}
+						return R;
+						function h() {
+							if (o === "-") {
+								o = m.next();
+								const u = h();
+								return (b) => !!u && !u(b);
+							}
+							if (o === "(") {
+								o = m.next();
+								const u = (function() {
+									const b = [];
+									let A = C();
+									for (; A && (b.push(A), o === "|" || o === ",");) {
+										do
+											o = m.next();
+										while (o === "|" || o === ",");
+										A = C();
+									}
+									return (_) => b.some(((k) => k(_)));
+								})();
+								return o === ")" && (o = m.next()), u;
+							}
+							if (E(o)) {
+								const u = [];
+								do
+									u.push(o), o = m.next();
+								while (E(o));
+								return (b) => S(u, b);
+							}
+							return null;
+						}
+						function C() {
+							const u = [];
+							let b = h();
+							for (; b;) u.push(b), b = h();
+							return (A) => u.every(((_) => _(A)));
+						}
+					};
+				},
+				810: (M, r) => {
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.disposeOnigString = void 0, r.disposeOnigString = function(E) {
+						typeof E.dispose == "function" && E.dispose();
+					};
+				},
+				150: (M, r, E) => {
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.parseRawGrammar = void 0;
+					const y = E(578), S = E(185), R = E(726);
+					r.parseRawGrammar = function(m, o = null) {
+						return o !== null && /\.json$/.test(o) ? (h = m, C = o, S.DebugFlags.InDebugMode ? R.parseJSON(h, C, !0) : JSON.parse(h)) : (function(u, b) {
+							return S.DebugFlags.InDebugMode ? y.parseWithLocation(u, b, "$vscodeTextmateLocation") : y.parsePLIST(u);
+						})(m, o);
+						var h, C;
+					};
+				},
+				578: (M, r) => {
+					function E(y, S, R) {
+						const m = y.length;
+						let o = 0, h = 1, C = 0;
+						function u(I) {
+							if (R === null) o += I;
+							else for (; I > 0;) y.charCodeAt(o) === 10 ? (o++, h++, C = 0) : (o++, C++), I--;
+						}
+						function b(I) {
+							R === null ? o = I : u(I - o);
+						}
+						function A() {
+							for (; o < m;) {
+								let I = y.charCodeAt(o);
+								if (I !== 32 && I !== 9 && I !== 13 && I !== 10) break;
+								u(1);
+							}
+						}
+						function _(I) {
+							return y.substr(o, I.length) === I && (u(I.length), !0);
+						}
+						function k(I) {
+							let N = y.indexOf(I, o);
+							b(N !== -1 ? N + I.length : m);
+						}
+						function c(I) {
+							let N = y.indexOf(I, o);
+							if (N !== -1) {
+								let T = y.substring(o, N);
+								return b(N + I.length), T;
+							}
+							{
+								let T = y.substr(o);
+								return b(m), T;
+							}
+						}
+						m > 0 && y.charCodeAt(0) === 65279 && (o = 1);
+						let l = 0, s = null, e = [], n = [], a = null;
+						function f(I, N) {
+							e.push(l), n.push(s), l = I, s = N;
+						}
+						function g() {
+							if (e.length === 0) return t("illegal state stack");
+							l = e.pop(), s = n.pop();
+						}
+						function t(I) {
+							throw new Error("Near offset " + o + ": " + I + " ~~~" + y.substr(o, 50) + "~~~");
+						}
+						const i = function() {
+							if (a === null) return t("missing <key>");
+							let I = {};
+							R !== null && (I[R] = {
+								filename: S,
+								line: h,
+								char: C
+							}), s[a] = I, a = null, f(1, I);
+						}, d = function() {
+							if (a === null) return t("missing <key>");
+							let I = [];
+							s[a] = I, a = null, f(2, I);
+						}, p = function() {
+							let I = {};
+							R !== null && (I[R] = {
+								filename: S,
+								line: h,
+								char: C
+							}), s.push(I), f(1, I);
+						}, x = function() {
+							let I = [];
+							s.push(I), f(2, I);
+						};
+						function w() {
+							if (l !== 1) return t("unexpected </dict>");
+							g();
+						}
+						function v() {
+							return l === 1 || l !== 2 ? t("unexpected </array>") : void g();
+						}
+						function P(I) {
+							if (l === 1) {
+								if (a === null) return t("missing <key>");
+								s[a] = I, a = null;
+							} else l === 2 ? s.push(I) : s = I;
+						}
+						function O(I) {
+							if (isNaN(I)) return t("cannot parse float");
+							if (l === 1) {
+								if (a === null) return t("missing <key>");
+								s[a] = I, a = null;
+							} else l === 2 ? s.push(I) : s = I;
+						}
+						function L(I) {
+							if (isNaN(I)) return t("cannot parse integer");
+							if (l === 1) {
+								if (a === null) return t("missing <key>");
+								s[a] = I, a = null;
+							} else l === 2 ? s.push(I) : s = I;
+						}
+						function D(I) {
+							if (l === 1) {
+								if (a === null) return t("missing <key>");
+								s[a] = I, a = null;
+							} else l === 2 ? s.push(I) : s = I;
+						}
+						function G(I) {
+							if (l === 1) {
+								if (a === null) return t("missing <key>");
+								s[a] = I, a = null;
+							} else l === 2 ? s.push(I) : s = I;
+						}
+						function j(I) {
+							if (l === 1) {
+								if (a === null) return t("missing <key>");
+								s[a] = I, a = null;
+							} else l === 2 ? s.push(I) : s = I;
+						}
+						function B() {
+							let I = c(">"), N = !1;
+							return I.charCodeAt(I.length - 1) === 47 && (N = !0, I = I.substring(0, I.length - 1)), {
+								name: I.trim(),
+								isClosed: N
+							};
+						}
+						function F(I) {
+							if (I.isClosed) return "";
+							let N = c("</");
+							return k(">"), N.replace(/&#([0-9]+);/g, (function(T, U) {
+								return String.fromCodePoint(parseInt(U, 10));
+							})).replace(/&#x([0-9a-f]+);/g, (function(T, U) {
+								return String.fromCodePoint(parseInt(U, 16));
+							})).replace(/&amp;|&lt;|&gt;|&quot;|&apos;/g, (function(T) {
+								switch (T) {
+									case "&amp;": return "&";
+									case "&lt;": return "<";
+									case "&gt;": return ">";
+									case "&quot;": return "\"";
+									case "&apos;": return "'";
+								}
+								return T;
+							}));
+						}
+						for (; o < m && (A(), !(o >= m));) {
+							const I = y.charCodeAt(o);
+							if (u(1), I !== 60) return t("expected <");
+							if (o >= m) return t("unexpected end of input");
+							const N = y.charCodeAt(o);
+							if (N === 63) {
+								u(1), k("?>");
+								continue;
+							}
+							if (N === 33) {
+								if (u(1), _("--")) {
+									k("-->");
+									continue;
+								}
+								k(">");
+								continue;
+							}
+							if (N === 47) {
+								if (u(1), A(), _("plist")) {
+									k(">");
+									continue;
+								}
+								if (_("dict")) {
+									k(">"), w();
+									continue;
+								}
+								if (_("array")) {
+									k(">"), v();
+									continue;
+								}
+								return t("unexpected closed tag");
+							}
+							let T = B();
+							switch (T.name) {
+								case "dict":
+									l === 1 ? i() : l === 2 ? p() : (s = {}, R !== null && (s[R] = {
+										filename: S,
+										line: h,
+										char: C
+									}), f(1, s)), T.isClosed && w();
+									continue;
+								case "array":
+									l === 1 ? d() : l === 2 ? x() : (s = [], f(2, s)), T.isClosed && v();
+									continue;
+								case "key":
+									$ = F(T), l !== 1 ? t("unexpected <key>") : a !== null ? t("too many <key>") : a = $;
+									continue;
+								case "string":
+									P(F(T));
+									continue;
+								case "real":
+									O(parseFloat(F(T)));
+									continue;
+								case "integer":
+									L(parseInt(F(T), 10));
+									continue;
+								case "date":
+									D(new Date(F(T)));
+									continue;
+								case "data":
+									G(F(T));
+									continue;
+								case "true":
+									F(T), j(!0);
+									continue;
+								case "false":
+									F(T), j(!1);
+									continue;
+							}
+							if (!/^plist/.test(T.name)) return t("unexpected opened tag " + T.name);
+						}
+						var $;
+						return s;
+					}
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.parsePLIST = r.parseWithLocation = void 0, r.parseWithLocation = function(y, S, R) {
+						return E(y, S, R);
+					}, r.parsePLIST = function(y) {
+						return E(y, null, null);
+					};
+				},
+				583: (M, r, E) => {
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.SyncRegistry = void 0;
+					const y = E(752);
+					r.SyncRegistry = class {
+						constructor(S, R) {
+							this._onigLibPromise = R, this._grammars = /* @__PURE__ */ new Map(), this._rawGrammars = /* @__PURE__ */ new Map(), this._injectionGrammars = /* @__PURE__ */ new Map(), this._theme = S;
+						}
+						dispose() {
+							for (const S of this._grammars.values()) S.dispose();
+						}
+						setTheme(S) {
+							this._theme = S;
+						}
+						getColorMap() {
+							return this._theme.getColorMap();
+						}
+						addGrammar(S, R) {
+							this._rawGrammars.set(S.scopeName, S), R && this._injectionGrammars.set(S.scopeName, R);
+						}
+						lookup(S) {
+							return this._rawGrammars.get(S);
+						}
+						injections(S) {
+							return this._injectionGrammars.get(S);
+						}
+						getDefaults() {
+							return this._theme.getDefaults();
+						}
+						themeMatch(S) {
+							return this._theme.match(S);
+						}
+						async grammarForScopeName(S, R, m, o, h) {
+							if (!this._grammars.has(S)) {
+								let C = this._rawGrammars.get(S);
+								if (!C) return null;
+								this._grammars.set(S, y.createGrammar(S, C, R, m, o, h, this, await this._onigLibPromise));
+							}
+							return this._grammars.get(S);
+						}
+					};
+				},
+				666: (M, r, E) => {
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.CompiledRule = r.RegExpSourceList = r.RegExpSource = r.RuleFactory = r.BeginWhileRule = r.BeginEndRule = r.IncludeOnlyRule = r.MatchRule = r.CaptureRule = r.Rule = r.ruleIdToNumber = r.ruleIdFromNumber = r.whileRuleId = r.endRuleId = void 0;
+					const y = E(807), S = E(784), R = /\\(\d+)/, m = /\\(\d+)/g;
+					r.endRuleId = -1, r.whileRuleId = -2, r.ruleIdFromNumber = function(s) {
+						return s;
+					}, r.ruleIdToNumber = function(s) {
+						return s;
+					};
+					class o {
+						constructor(e, n, a, f) {
+							this.$location = e, this.id = n, this._name = a || null, this._nameIsCapturing = y.RegexSource.hasCaptures(this._name), this._contentName = f || null, this._contentNameIsCapturing = y.RegexSource.hasCaptures(this._contentName);
+						}
+						get debugName() {
+							const e = this.$location ? `${y.basename(this.$location.filename)}:${this.$location.line}` : "unknown";
+							return `${this.constructor.name}#${this.id} @ ${e}`;
+						}
+						getName(e, n) {
+							return this._nameIsCapturing && this._name !== null && e !== null && n !== null ? y.RegexSource.replaceCaptures(this._name, e, n) : this._name;
+						}
+						getContentName(e, n) {
+							return this._contentNameIsCapturing && this._contentName !== null ? y.RegexSource.replaceCaptures(this._contentName, e, n) : this._contentName;
+						}
+					}
+					r.Rule = o;
+					class h extends o {
+						constructor(e, n, a, f, g) {
+							super(e, n, a, f), this.retokenizeCapturedWithRuleId = g;
+						}
+						dispose() {}
+						collectPatterns(e, n) {
+							throw new Error("Not supported!");
+						}
+						compile(e, n) {
+							throw new Error("Not supported!");
+						}
+						compileAG(e, n, a, f) {
+							throw new Error("Not supported!");
+						}
+					}
+					r.CaptureRule = h;
+					class C extends o {
+						constructor(e, n, a, f, g) {
+							super(e, n, a, null), this._match = new k(f, this.id), this.captures = g, this._cachedCompiledPatterns = null;
+						}
+						dispose() {
+							this._cachedCompiledPatterns && (this._cachedCompiledPatterns.dispose(), this._cachedCompiledPatterns = null);
+						}
+						get debugMatchRegExp() {
+							return `${this._match.source}`;
+						}
+						collectPatterns(e, n) {
+							n.push(this._match);
+						}
+						compile(e, n) {
+							return this._getCachedCompiledPatterns(e).compile(e);
+						}
+						compileAG(e, n, a, f) {
+							return this._getCachedCompiledPatterns(e).compileAG(e, a, f);
+						}
+						_getCachedCompiledPatterns(e) {
+							return this._cachedCompiledPatterns || (this._cachedCompiledPatterns = new c(), this.collectPatterns(e, this._cachedCompiledPatterns)), this._cachedCompiledPatterns;
+						}
+					}
+					r.MatchRule = C;
+					class u extends o {
+						constructor(e, n, a, f, g) {
+							super(e, n, a, f), this.patterns = g.patterns, this.hasMissingPatterns = g.hasMissingPatterns, this._cachedCompiledPatterns = null;
+						}
+						dispose() {
+							this._cachedCompiledPatterns && (this._cachedCompiledPatterns.dispose(), this._cachedCompiledPatterns = null);
+						}
+						collectPatterns(e, n) {
+							for (const a of this.patterns) e.getRule(a).collectPatterns(e, n);
+						}
+						compile(e, n) {
+							return this._getCachedCompiledPatterns(e).compile(e);
+						}
+						compileAG(e, n, a, f) {
+							return this._getCachedCompiledPatterns(e).compileAG(e, a, f);
+						}
+						_getCachedCompiledPatterns(e) {
+							return this._cachedCompiledPatterns || (this._cachedCompiledPatterns = new c(), this.collectPatterns(e, this._cachedCompiledPatterns)), this._cachedCompiledPatterns;
+						}
+					}
+					r.IncludeOnlyRule = u;
+					class b extends o {
+						constructor(e, n, a, f, g, t, i, d, p, x) {
+							super(e, n, a, f), this._begin = new k(g, this.id), this.beginCaptures = t, this._end = new k(i || "￿", -1), this.endHasBackReferences = this._end.hasBackReferences, this.endCaptures = d, this.applyEndPatternLast = p || !1, this.patterns = x.patterns, this.hasMissingPatterns = x.hasMissingPatterns, this._cachedCompiledPatterns = null;
+						}
+						dispose() {
+							this._cachedCompiledPatterns && (this._cachedCompiledPatterns.dispose(), this._cachedCompiledPatterns = null);
+						}
+						get debugBeginRegExp() {
+							return `${this._begin.source}`;
+						}
+						get debugEndRegExp() {
+							return `${this._end.source}`;
+						}
+						getEndWithResolvedBackReferences(e, n) {
+							return this._end.resolveBackReferences(e, n);
+						}
+						collectPatterns(e, n) {
+							n.push(this._begin);
+						}
+						compile(e, n) {
+							return this._getCachedCompiledPatterns(e, n).compile(e);
+						}
+						compileAG(e, n, a, f) {
+							return this._getCachedCompiledPatterns(e, n).compileAG(e, a, f);
+						}
+						_getCachedCompiledPatterns(e, n) {
+							if (!this._cachedCompiledPatterns) {
+								this._cachedCompiledPatterns = new c();
+								for (const a of this.patterns) e.getRule(a).collectPatterns(e, this._cachedCompiledPatterns);
+								this.applyEndPatternLast ? this._cachedCompiledPatterns.push(this._end.hasBackReferences ? this._end.clone() : this._end) : this._cachedCompiledPatterns.unshift(this._end.hasBackReferences ? this._end.clone() : this._end);
+							}
+							return this._end.hasBackReferences && (this.applyEndPatternLast ? this._cachedCompiledPatterns.setSource(this._cachedCompiledPatterns.length() - 1, n) : this._cachedCompiledPatterns.setSource(0, n)), this._cachedCompiledPatterns;
+						}
+					}
+					r.BeginEndRule = b;
+					class A extends o {
+						constructor(e, n, a, f, g, t, i, d, p) {
+							super(e, n, a, f), this._begin = new k(g, this.id), this.beginCaptures = t, this.whileCaptures = d, this._while = new k(i, r.whileRuleId), this.whileHasBackReferences = this._while.hasBackReferences, this.patterns = p.patterns, this.hasMissingPatterns = p.hasMissingPatterns, this._cachedCompiledPatterns = null, this._cachedCompiledWhilePatterns = null;
+						}
+						dispose() {
+							this._cachedCompiledPatterns && (this._cachedCompiledPatterns.dispose(), this._cachedCompiledPatterns = null), this._cachedCompiledWhilePatterns && (this._cachedCompiledWhilePatterns.dispose(), this._cachedCompiledWhilePatterns = null);
+						}
+						get debugBeginRegExp() {
+							return `${this._begin.source}`;
+						}
+						get debugWhileRegExp() {
+							return `${this._while.source}`;
+						}
+						getWhileWithResolvedBackReferences(e, n) {
+							return this._while.resolveBackReferences(e, n);
+						}
+						collectPatterns(e, n) {
+							n.push(this._begin);
+						}
+						compile(e, n) {
+							return this._getCachedCompiledPatterns(e).compile(e);
+						}
+						compileAG(e, n, a, f) {
+							return this._getCachedCompiledPatterns(e).compileAG(e, a, f);
+						}
+						_getCachedCompiledPatterns(e) {
+							if (!this._cachedCompiledPatterns) {
+								this._cachedCompiledPatterns = new c();
+								for (const n of this.patterns) e.getRule(n).collectPatterns(e, this._cachedCompiledPatterns);
+							}
+							return this._cachedCompiledPatterns;
+						}
+						compileWhile(e, n) {
+							return this._getCachedCompiledWhilePatterns(e, n).compile(e);
+						}
+						compileWhileAG(e, n, a, f) {
+							return this._getCachedCompiledWhilePatterns(e, n).compileAG(e, a, f);
+						}
+						_getCachedCompiledWhilePatterns(e, n) {
+							return this._cachedCompiledWhilePatterns || (this._cachedCompiledWhilePatterns = new c(), this._cachedCompiledWhilePatterns.push(this._while.hasBackReferences ? this._while.clone() : this._while)), this._while.hasBackReferences && this._cachedCompiledWhilePatterns.setSource(0, n || "￿"), this._cachedCompiledWhilePatterns;
+						}
+					}
+					r.BeginWhileRule = A;
+					class _ {
+						static createCaptureRule(e, n, a, f, g) {
+							return e.registerRule(((t) => new h(n, t, a, f, g)));
+						}
+						static getCompiledRuleId(e, n, a) {
+							return e.id || n.registerRule(((f) => {
+								if (e.id = f, e.match) return new C(e.$vscodeTextmateLocation, e.id, e.name, e.match, _._compileCaptures(e.captures, n, a));
+								if (e.begin === void 0) {
+									e.repository && (a = y.mergeObjects({}, a, e.repository));
+									let g = e.patterns;
+									return g === void 0 && e.include && (g = [{ include: e.include }]), new u(e.$vscodeTextmateLocation, e.id, e.name, e.contentName, _._compilePatterns(g, n, a));
+								}
+								return e.while ? new A(e.$vscodeTextmateLocation, e.id, e.name, e.contentName, e.begin, _._compileCaptures(e.beginCaptures || e.captures, n, a), e.while, _._compileCaptures(e.whileCaptures || e.captures, n, a), _._compilePatterns(e.patterns, n, a)) : new b(e.$vscodeTextmateLocation, e.id, e.name, e.contentName, e.begin, _._compileCaptures(e.beginCaptures || e.captures, n, a), e.end, _._compileCaptures(e.endCaptures || e.captures, n, a), e.applyEndPatternLast, _._compilePatterns(e.patterns, n, a));
+							})), e.id;
+						}
+						static _compileCaptures(e, n, a) {
+							let f = [];
+							if (e) {
+								let g = 0;
+								for (const t in e) {
+									if (t === "$vscodeTextmateLocation") continue;
+									const i = parseInt(t, 10);
+									i > g && (g = i);
+								}
+								for (let t = 0; t <= g; t++) f[t] = null;
+								for (const t in e) {
+									if (t === "$vscodeTextmateLocation") continue;
+									const i = parseInt(t, 10);
+									let d = 0;
+									e[t].patterns && (d = _.getCompiledRuleId(e[t], n, a)), f[i] = _.createCaptureRule(n, e[t].$vscodeTextmateLocation, e[t].name, e[t].contentName, d);
+								}
+							}
+							return f;
+						}
+						static _compilePatterns(e, n, a) {
+							let f = [];
+							if (e) for (let g = 0, t = e.length; g < t; g++) {
+								const i = e[g];
+								let d = -1;
+								if (i.include) {
+									const p = S.parseInclude(i.include);
+									switch (p.kind) {
+										case 0:
+										case 1:
+											d = _.getCompiledRuleId(a[i.include], n, a);
+											break;
+										case 2:
+											let x = a[p.ruleName];
+											x && (d = _.getCompiledRuleId(x, n, a));
+											break;
+										case 3:
+										case 4:
+											const w = p.scopeName, v = p.kind === 4 ? p.ruleName : null, P = n.getExternalGrammar(w, a);
+											if (P) if (v) {
+												let O = P.repository[v];
+												O && (d = _.getCompiledRuleId(O, n, P.repository));
+											} else d = _.getCompiledRuleId(P.repository.$self, n, P.repository);
+									}
+								} else d = _.getCompiledRuleId(i, n, a);
+								if (d !== -1) {
+									const p = n.getRule(d);
+									let x = !1;
+									if ((p instanceof u || p instanceof b || p instanceof A) && p.hasMissingPatterns && p.patterns.length === 0 && (x = !0), x) continue;
+									f.push(d);
+								}
+							}
+							return {
+								patterns: f,
+								hasMissingPatterns: (e ? e.length : 0) !== f.length
+							};
+						}
+					}
+					r.RuleFactory = _;
+					class k {
+						constructor(e, n) {
+							if (e) {
+								const a = e.length;
+								let f = 0, g = [], t = !1;
+								for (let i = 0; i < a; i++) if (e.charAt(i) === "\\" && i + 1 < a) {
+									const d = e.charAt(i + 1);
+									d === "z" ? (g.push(e.substring(f, i)), g.push("$(?!\\n)(?<!\\n)"), f = i + 2) : d !== "A" && d !== "G" || (t = !0), i++;
+								}
+								this.hasAnchor = t, f === 0 ? this.source = e : (g.push(e.substring(f, a)), this.source = g.join(""));
+							} else this.hasAnchor = !1, this.source = e;
+							this.hasAnchor ? this._anchorCache = this._buildAnchorCache() : this._anchorCache = null, this.ruleId = n, this.hasBackReferences = R.test(this.source);
+						}
+						clone() {
+							return new k(this.source, this.ruleId);
+						}
+						setSource(e) {
+							this.source !== e && (this.source = e, this.hasAnchor && (this._anchorCache = this._buildAnchorCache()));
+						}
+						resolveBackReferences(e, n) {
+							let a = n.map(((f) => e.substring(f.start, f.end)));
+							return m.lastIndex = 0, this.source.replace(m, ((f, g) => y.escapeRegExpCharacters(a[parseInt(g, 10)] || "")));
+						}
+						_buildAnchorCache() {
+							let e, n, a, f, g = [], t = [], i = [], d = [];
+							for (e = 0, n = this.source.length; e < n; e++) a = this.source.charAt(e), g[e] = a, t[e] = a, i[e] = a, d[e] = a, a === "\\" && e + 1 < n && (f = this.source.charAt(e + 1), f === "A" ? (g[e + 1] = "￿", t[e + 1] = "￿", i[e + 1] = "A", d[e + 1] = "A") : f === "G" ? (g[e + 1] = "￿", t[e + 1] = "G", i[e + 1] = "￿", d[e + 1] = "G") : (g[e + 1] = f, t[e + 1] = f, i[e + 1] = f, d[e + 1] = f), e++);
+							return {
+								A0_G0: g.join(""),
+								A0_G1: t.join(""),
+								A1_G0: i.join(""),
+								A1_G1: d.join("")
+							};
+						}
+						resolveAnchors(e, n) {
+							return this.hasAnchor && this._anchorCache ? e ? n ? this._anchorCache.A1_G1 : this._anchorCache.A1_G0 : n ? this._anchorCache.A0_G1 : this._anchorCache.A0_G0 : this.source;
+						}
+					}
+					r.RegExpSource = k;
+					class c {
+						constructor() {
+							this._items = [], this._hasAnchors = !1, this._cached = null, this._anchorCache = {
+								A0_G0: null,
+								A0_G1: null,
+								A1_G0: null,
+								A1_G1: null
+							};
+						}
+						dispose() {
+							this._disposeCaches();
+						}
+						_disposeCaches() {
+							this._cached && (this._cached.dispose(), this._cached = null), this._anchorCache.A0_G0 && (this._anchorCache.A0_G0.dispose(), this._anchorCache.A0_G0 = null), this._anchorCache.A0_G1 && (this._anchorCache.A0_G1.dispose(), this._anchorCache.A0_G1 = null), this._anchorCache.A1_G0 && (this._anchorCache.A1_G0.dispose(), this._anchorCache.A1_G0 = null), this._anchorCache.A1_G1 && (this._anchorCache.A1_G1.dispose(), this._anchorCache.A1_G1 = null);
+						}
+						push(e) {
+							this._items.push(e), this._hasAnchors = this._hasAnchors || e.hasAnchor;
+						}
+						unshift(e) {
+							this._items.unshift(e), this._hasAnchors = this._hasAnchors || e.hasAnchor;
+						}
+						length() {
+							return this._items.length;
+						}
+						setSource(e, n) {
+							this._items[e].source !== n && (this._disposeCaches(), this._items[e].setSource(n));
+						}
+						compile(e) {
+							return this._cached || (this._cached = new l(e, this._items.map(((n) => n.source)), this._items.map(((n) => n.ruleId)))), this._cached;
+						}
+						compileAG(e, n, a) {
+							return this._hasAnchors ? n ? a ? (this._anchorCache.A1_G1 || (this._anchorCache.A1_G1 = this._resolveAnchors(e, n, a)), this._anchorCache.A1_G1) : (this._anchorCache.A1_G0 || (this._anchorCache.A1_G0 = this._resolveAnchors(e, n, a)), this._anchorCache.A1_G0) : a ? (this._anchorCache.A0_G1 || (this._anchorCache.A0_G1 = this._resolveAnchors(e, n, a)), this._anchorCache.A0_G1) : (this._anchorCache.A0_G0 || (this._anchorCache.A0_G0 = this._resolveAnchors(e, n, a)), this._anchorCache.A0_G0) : this.compile(e);
+						}
+						_resolveAnchors(e, n, a) {
+							return new l(e, this._items.map(((f) => f.resolveAnchors(n, a))), this._items.map(((f) => f.ruleId)));
+						}
+					}
+					r.RegExpSourceList = c;
+					class l {
+						constructor(e, n, a) {
+							this.regExps = n, this.rules = a, this.scanner = e.createOnigScanner(n);
+						}
+						dispose() {
+							typeof this.scanner.dispose == "function" && this.scanner.dispose();
+						}
+						toString() {
+							const e = [];
+							for (let n = 0, a = this.rules.length; n < a; n++) e.push("   - " + this.rules[n] + ": " + this.regExps[n]);
+							return e.join(`
+`);
+						}
+						findNextMatchSync(e, n, a) {
+							const f = this.scanner.findNextMatchSync(e, n, a);
+							return f ? {
+								ruleId: this.rules[f.index],
+								captureIndices: f.captureIndices
+							} : null;
+						}
+					}
+					r.CompiledRule = l;
+				},
+				63: (M, r, E) => {
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.ThemeTrieElement = r.ThemeTrieElementRule = r.ColorMap = r.fontStyleToString = r.ParsedThemeRule = r.parseTheme = r.StyleAttributes = r.ScopeStack = r.Theme = void 0;
+					const y = E(807);
+					class S {
+						constructor(c, l, s) {
+							this._colorMap = c, this._defaults = l, this._root = s, this._cachedMatchRoot = new y.CachedFn(((e) => this._root.match(e)));
+						}
+						static createFromRawTheme(c, l) {
+							return this.createFromParsedTheme(h(c), l);
+						}
+						static createFromParsedTheme(c, l) {
+							return (function(s, e) {
+								s.sort(((w, v) => {
+									let P = y.strcmp(w.scope, v.scope);
+									return P !== 0 ? P : (P = y.strArrCmp(w.parentScopes, v.parentScopes), P !== 0 ? P : w.index - v.index);
+								}));
+								let n = 0, a = "#000000", f = "#ffffff", g = "", t = 0, i = 0;
+								for (; s.length >= 1 && s[0].scope === "";) {
+									let w = s.shift();
+									w.fontStyle !== -1 && (n = w.fontStyle), w.foreground !== null && (a = w.foreground), w.background !== null && (f = w.background), w.fontFamily !== null && (g = w.fontFamily), w.fontSize !== null && (t = w.fontSize), w.lineHeight !== null && (i = w.lineHeight);
+								}
+								let d = new u(e), p = new o(n, d.getId(a), d.getId(f), g, t, i), x = new _(new A(0, null, -1, 0, 0, g, t, i), []);
+								for (let w = 0, v = s.length; w < v; w++) {
+									let P = s[w];
+									x.insert(0, P.scope, P.parentScopes, P.fontStyle, d.getId(P.foreground), d.getId(P.background), P.fontFamily, P.fontSize, P.lineHeight);
+								}
+								return new S(d, p, x);
+							})(c, l);
+						}
+						getColorMap() {
+							return this._colorMap.getColorMap();
+						}
+						getDefaults() {
+							return this._defaults;
+						}
+						match(c) {
+							if (c === null) return this._defaults;
+							const l = c.scopeName, s = this._cachedMatchRoot.get(l).find(((e) => (function(n, a) {
+								if (a.length === 0) return !0;
+								for (let f = 0; f < a.length; f++) {
+									let g = a[f], t = !1;
+									if (g === ">") {
+										if (f === a.length - 1) return !1;
+										g = a[++f], t = !0;
+									}
+									for (; n && !m(n.scopeName, g);) {
+										if (t) return !1;
+										n = n.parent;
+									}
+									if (!n) return !1;
+									n = n.parent;
+								}
+								return !0;
+							})(c.parent, e.parentScopes)));
+							return s ? new o(s.fontStyle, s.foreground, s.background, s.fontFamily, s.fontSize, s.lineHeight) : null;
+						}
+					}
+					r.Theme = S;
+					class R {
+						constructor(c, l) {
+							this.parent = c, this.scopeName = l;
+						}
+						static push(c, l) {
+							for (const s of l) c = new R(c, s);
+							return c;
+						}
+						static from(...c) {
+							let l = null;
+							for (let s = 0; s < c.length; s++) l = new R(l, c[s]);
+							return l;
+						}
+						push(c) {
+							return new R(this, c);
+						}
+						getSegments() {
+							let c = this;
+							const l = [];
+							for (; c;) l.push(c.scopeName), c = c.parent;
+							return l.reverse(), l;
+						}
+						toString() {
+							return this.getSegments().join(" ");
+						}
+						extends(c) {
+							return this === c || this.parent !== null && this.parent.extends(c);
+						}
+						getExtensionIfDefined(c) {
+							const l = [];
+							let s = this;
+							for (; s && s !== c;) l.push(s.scopeName), s = s.parent;
+							return s === c ? l.reverse() : void 0;
+						}
+					}
+					function m(k, c) {
+						return c === k || k.startsWith(c) && k[c.length] === ".";
+					}
+					r.ScopeStack = R;
+					class o {
+						constructor(c, l, s, e, n, a) {
+							this.fontStyle = c, this.foregroundId = l, this.backgroundId = s, this.fontFamily = e, this.fontSize = n, this.lineHeight = a;
+						}
+					}
+					function h(k) {
+						if (!k) return [];
+						if (!k.settings || !Array.isArray(k.settings)) return [];
+						let c = k.settings, l = [], s = 0;
+						for (let e = 0, n = c.length; e < n; e++) {
+							let a, f = c[e];
+							if (!f.settings) continue;
+							if (typeof f.scope == "string") {
+								let w = f.scope;
+								w = w.replace(/^[,]+/, ""), w = w.replace(/[,]+$/, ""), a = w.split(",");
+							} else a = Array.isArray(f.scope) ? f.scope : [""];
+							let g = -1;
+							if (typeof f.settings.fontStyle == "string") {
+								g = 0;
+								let w = f.settings.fontStyle.split(" ");
+								for (let v = 0, P = w.length; v < P; v++) switch (w[v]) {
+									case "italic":
+										g |= 1;
+										break;
+									case "bold":
+										g |= 2;
+										break;
+									case "underline":
+										g |= 4;
+										break;
+									case "strikethrough": g |= 8;
+								}
+							}
+							let t = null;
+							typeof f.settings.foreground == "string" && y.isValidHexColor(f.settings.foreground) && (t = f.settings.foreground);
+							let i = null;
+							typeof f.settings.background == "string" && y.isValidHexColor(f.settings.background) && (i = f.settings.background);
+							let d = "";
+							typeof f.settings.fontFamily == "string" && (d = f.settings.fontFamily);
+							let p = 0;
+							typeof f.settings.fontSize == "number" && (p = f.settings.fontSize);
+							let x = 0;
+							typeof f.settings.lineHeight == "number" && (x = f.settings.lineHeight);
+							for (let w = 0, v = a.length; w < v; w++) {
+								let P = a[w].trim().split(" "), O = P[P.length - 1], L = null;
+								P.length > 1 && (L = P.slice(0, P.length - 1), L.reverse()), l[s++] = new C(O, L, e, g, t, i, d, p, x);
+							}
+						}
+						return l;
+					}
+					r.StyleAttributes = o, r.parseTheme = h;
+					class C {
+						constructor(c, l, s, e, n, a, f, g, t) {
+							this.scope = c, this.parentScopes = l, this.index = s, this.fontStyle = e, this.foreground = n, this.background = a, this.fontFamily = f, this.fontSize = g, this.lineHeight = t;
+						}
+					}
+					r.ParsedThemeRule = C, r.fontStyleToString = function(k) {
+						if (k === -1) return "not set";
+						let c = "";
+						return 1 & k && (c += "italic "), 2 & k && (c += "bold "), 4 & k && (c += "underline "), 8 & k && (c += "strikethrough "), c === "" && (c = "none"), c.trim();
+					};
+					class u {
+						constructor(c) {
+							if (this._lastColorId = 0, this._id2color = [], this._color2id = Object.create(null), Array.isArray(c)) {
+								this._isFrozen = !0;
+								for (let l = 0, s = c.length; l < s; l++) this._color2id[c[l]] = l, this._id2color[l] = c[l];
+							} else this._isFrozen = !1;
+						}
+						getId(c) {
+							if (c === null) return 0;
+							c = c.toUpperCase();
+							let l = this._color2id[c];
+							if (l) return l;
+							if (this._isFrozen) throw new Error(`Missing color in color map - ${c}`);
+							return l = ++this._lastColorId, this._color2id[c] = l, this._id2color[l] = c, l;
+						}
+						getColorMap() {
+							return this._id2color.slice(0);
+						}
+					}
+					r.ColorMap = u;
+					const b = Object.freeze([]);
+					class A {
+						constructor(c, l, s, e, n, a, f, g) {
+							this.scopeDepth = c, this.parentScopes = l || b, this.fontStyle = s, this.foreground = e, this.background = n, this.fontFamily = a, this.fontSize = f, this.lineHeight = g;
+						}
+						clone() {
+							return new A(this.scopeDepth, this.parentScopes, this.fontStyle, this.foreground, this.background, this.fontFamily, this.fontSize, this.lineHeight);
+						}
+						static cloneArr(c) {
+							let l = [];
+							for (let s = 0, e = c.length; s < e; s++) l[s] = c[s].clone();
+							return l;
+						}
+						acceptOverwrite(c, l, s, e, n, a, f) {
+							this.scopeDepth > c ? console.log("how did this happen?") : this.scopeDepth = c, l !== -1 && (this.fontStyle = l), s !== 0 && (this.foreground = s), e !== 0 && (this.background = e), n !== "" && (this.fontFamily = n), a !== 0 && (this.fontSize = a), f !== 0 && (this.lineHeight = f);
+						}
+					}
+					r.ThemeTrieElementRule = A;
+					class _ {
+						constructor(c, l = [], s = {}) {
+							this._mainRule = c, this._children = s, this._rulesWithParentScopes = l;
+						}
+						static _cmpBySpecificity(c, l) {
+							if (c.scopeDepth !== l.scopeDepth) return l.scopeDepth - c.scopeDepth;
+							let s = 0, e = 0;
+							for (; c.parentScopes[s] === ">" && s++, l.parentScopes[e] === ">" && e++, !(s >= c.parentScopes.length || e >= l.parentScopes.length);) {
+								const n = l.parentScopes[e].length - c.parentScopes[s].length;
+								if (n !== 0) return n;
+								s++, e++;
+							}
+							return l.parentScopes.length - c.parentScopes.length;
+						}
+						match(c) {
+							if (c !== "") {
+								let s, e, n = c.indexOf(".");
+								if (n === -1 ? (s = c, e = "") : (s = c.substring(0, n), e = c.substring(n + 1)), this._children.hasOwnProperty(s)) return this._children[s].match(e);
+							}
+							const l = this._rulesWithParentScopes.concat(this._mainRule);
+							return l.sort(_._cmpBySpecificity), l;
+						}
+						insert(c, l, s, e, n, a, f, g, t) {
+							if (l === "") return void this._doInsertHere(c, s, e, n, a, f, g, t);
+							let i, d, p, x = l.indexOf(".");
+							x === -1 ? (i = l, d = "") : (i = l.substring(0, x), d = l.substring(x + 1)), this._children.hasOwnProperty(i) ? p = this._children[i] : (p = new _(this._mainRule.clone(), A.cloneArr(this._rulesWithParentScopes)), this._children[i] = p), p.insert(c + 1, d, s, e, n, a, f, g, t);
+						}
+						_doInsertHere(c, l, s, e, n, a, f, g) {
+							if (l !== null) {
+								for (let t = 0, i = this._rulesWithParentScopes.length; t < i; t++) {
+									let d = this._rulesWithParentScopes[t];
+									if (y.strArrCmp(d.parentScopes, l) === 0) return void d.acceptOverwrite(c, s, e, n, a, f, g);
+								}
+								s === -1 && (s = this._mainRule.fontStyle), e === 0 && (e = this._mainRule.foreground), n === 0 && (n = this._mainRule.background), a === "" && (a = this._mainRule.fontFamily), f === 0 && (f = this._mainRule.fontSize), g === 0 && (g = this._mainRule.lineHeight), this._rulesWithParentScopes.push(new A(c, l, s, e, n, a, f, g));
+							} else this._mainRule.acceptOverwrite(c, s, e, n, a, f, g);
+						}
+					}
+					r.ThemeTrieElement = _;
+				},
+				807: (M, r) => {
+					function E(m) {
+						return Array.isArray(m) ? (function(o) {
+							let h = [];
+							for (let C = 0, u = o.length; C < u; C++) h[C] = E(o[C]);
+							return h;
+						})(m) : typeof m == "object" ? (function(o) {
+							let h = {};
+							for (let C in o) h[C] = E(o[C]);
+							return h;
+						})(m) : m;
+					}
+					Object.defineProperty(r, "__esModule", { value: !0 }), r.containsRTL = r.performanceNow = r.CachedFn = r.escapeRegExpCharacters = r.isValidHexColor = r.strArrCmp = r.strcmp = r.RegexSource = r.basename = r.mergeObjects = r.clone = void 0, r.clone = function(m) {
+						return E(m);
+					}, r.mergeObjects = function(m, ...o) {
+						return o.forEach(((h) => {
+							for (let C in h) m[C] = h[C];
+						})), m;
+					}, r.basename = function m(o) {
+						const h = ~o.lastIndexOf("/") || ~o.lastIndexOf("\\");
+						return h === 0 ? o : ~h == o.length - 1 ? m(o.substring(0, o.length - 1)) : o.substr(1 + ~h);
+					};
+					let y, S = /\$(\d+)|\${(\d+):\/(downcase|upcase)}/g;
+					function R(m, o) {
+						return m < o ? -1 : m > o ? 1 : 0;
+					}
+					r.RegexSource = class {
+						static hasCaptures(m) {
+							return m !== null && (S.lastIndex = 0, S.test(m));
+						}
+						static replaceCaptures(m, o, h) {
+							return m.replace(S, ((C, u, b, A) => {
+								let _ = h[parseInt(u || b, 10)];
+								if (!_) return C;
+								{
+									let k = o.substring(_.start, _.end);
+									for (; k[0] === ".";) k = k.substring(1);
+									switch (A) {
+										case "downcase": return k.toLowerCase();
+										case "upcase": return k.toUpperCase();
+										default: return k;
+									}
+								}
+							}));
+						}
+					}, r.strcmp = R, r.strArrCmp = function(m, o) {
+						if (m === null && o === null) return 0;
+						if (!m) return -1;
+						if (!o) return 1;
+						let h = m.length, C = o.length;
+						if (h === C) {
+							for (let u = 0; u < h; u++) {
+								let b = R(m[u], o[u]);
+								if (b !== 0) return b;
+							}
+							return 0;
+						}
+						return h - C;
+					}, r.isValidHexColor = function(m) {
+						return !!(/^#[0-9a-f]{6}$/i.test(m) || /^#[0-9a-f]{8}$/i.test(m) || /^#[0-9a-f]{3}$/i.test(m) || /^#[0-9a-f]{4}$/i.test(m));
+					}, r.escapeRegExpCharacters = function(m) {
+						return m.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, "\\$&");
+					}, r.CachedFn = class {
+						constructor(m) {
+							this.fn = m, this.cache = /* @__PURE__ */ new Map();
+						}
+						get(m) {
+							if (this.cache.has(m)) return this.cache.get(m);
+							const o = this.fn(m);
+							return this.cache.set(m, o), o;
+						}
+					}, r.performanceNow = typeof performance > "u" ? function() {
+						return Date.now();
+					} : function() {
+						return performance.now();
+					}, r.containsRTL = function(m) {
+						return y || (y = /(?:[\u05BE\u05C0\u05C3\u05C6\u05D0-\u05F4\u0608\u060B\u060D\u061B-\u064A\u066D-\u066F\u0671-\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u0710\u0712-\u072F\u074D-\u07A5\u07B1-\u07EA\u07F4\u07F5\u07FA\u07FE-\u0815\u081A\u0824\u0828\u0830-\u0858\u085E-\u088E\u08A0-\u08C9\u200F\uFB1D\uFB1F-\uFB28\uFB2A-\uFD3D\uFD50-\uFDC7\uFDF0-\uFDFC\uFE70-\uFEFC]|\uD802[\uDC00-\uDD1B\uDD20-\uDE00\uDE10-\uDE35\uDE40-\uDEE4\uDEEB-\uDF35\uDF40-\uDFFF]|\uD803[\uDC00-\uDD23\uDE80-\uDEA9\uDEAD-\uDF45\uDF51-\uDF81\uDF86-\uDFF6]|\uD83A[\uDC00-\uDCCF\uDD00-\uDD43\uDD4B-\uDFFF]|\uD83B[\uDC00-\uDEBB])/), y.test(m);
+					};
+				}
+			}, z = {};
+			return (function M(r) {
+				var E = z[r];
+				if (E !== void 0) return E.exports;
+				var y = z[r] = { exports: {} };
+				return H[r].call(y.exports, y, y.exports, M), y.exports;
+			})(625);
+		})()));
+	})(oe)), oe.exports;
+}
+function be(V, ue) {
+	return ue.forEach(function(H) {
+		H && typeof H != "string" && !Array.isArray(H) && Object.keys(H).forEach(function(z) {
+			if (z !== "default" && !(z in V)) {
+				var M = Object.getOwnPropertyDescriptor(H, z);
+				Object.defineProperty(V, z, M.get ? M : {
+					enumerable: !0,
+					get: function() {
+						return H[z];
+					}
+				});
+			}
+		});
+	}), Object.freeze(V);
+}
+var de = ye(), ke = be({
+	__proto__: null,
+	default: ge(de)
+}, [de]);
+export { ke as main };
