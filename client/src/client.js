@@ -109,7 +109,6 @@ function createDiskProvider() {
 
         async writeFile(uri, content) {
             const path = toRelativePath(uri);
-            console.log('writeFile:', uri.toString(), '→', path);
             const text = new TextDecoder().decode(content);
             await window.fsWriteFile(path, text);
         },
@@ -222,7 +221,7 @@ async function preRegisterVsSetiIconTheme() {
         contributes: {
             iconThemes: [{
                 id: 'vs-seti',
-                label: 'VS Seti',
+                label: 'Seti (Visual Studio Code)',
                 path: './icons/vs-seti-icon-theme.json'
             }]
         }
@@ -394,11 +393,6 @@ async function main() {
         },
         messageTransports: { reader, writer }
     });
-
-    console.log('workspace file uri:', workspaceFileUri.toString());
-    console.log('workspace file content:', JSON.stringify({ folders: [{ path: WORKSPACE_PATH }] }));
-    console.log('WORKSPACE_ROOT:', WORKSPACE_ROOT);
-    console.log('WORKSPACE_PATH:', WORKSPACE_PATH);
 
     client.start();
 
