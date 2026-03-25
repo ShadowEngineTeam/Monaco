@@ -65,30 +65,28 @@ npm install -g @yao-pkg/pkg
 Then you may bundle it for the following targets:
 ### Windows
 ```bash
-pkg language-servers/haxe/server.js --targets latest-win-x64 --output bin/win/haxe-language-server-x64
-pkg language-servers/haxe/server.js --targets latest-win-x86 --output bin/win/haxe-language-server-x86
-pkg language-servers/haxe/server.js --targets latest-win-arm64 --output bin/win/haxe-language-server-arm64
+pkg language-servers/haxe/server.js --targets node22-win-x64 --output bin/win/haxe-language-server-x64
+pkg language-servers/haxe/server.js --targets node22-win-arm64 --output bin/win/haxe-language-server-arm64
 ```
 
 ### Linux
 ```bash
-pkg language-servers/haxe/server.js --targets latest-linuxstatic-x64 --output bin/linux/haxe-language-server-x64
-pkg language-servers/haxe/server.js --targets latest-linux-x86 --output bin/linux/haxe-language-server-x86
-pkg language-servers/haxe/server.js --targets latest-linuxstatic-arm64 --output bin/linux/haxe-language-server-arm64
-pkg language-servers/haxe/server.js --targets latest-linux-armv7 --output bin/linux/haxe-language-server-armv7
+pkg language-servers/haxe/server.js --targets node22-linuxstatic-x64 --output bin/linux/haxe-language-server-x64
+pkg language-servers/haxe/server.js --targets node22-linuxstatic-arm64 --output bin/linux/haxe-language-server-arm64
+pkg language-servers/haxe/server.js --targets node22-linuxstatic-armv7 --output bin/linux/haxe-language-server-armv7
 ```
 
 ### macOS
 ```bash
-pkg language-servers/haxe/server.js --targets latest-macos-x64 --output bin/mac/haxe-language-server-x64
-pkg language-servers/haxe/server.js --targets latest-macos-arm64 --output bin/mac/haxe-language-server-arm64
+pkg language-servers/haxe/server.js --targets node22-macos-x64 --output bin/mac/haxe-language-server-x64
+pkg language-servers/haxe/server.js --targets node22-macos-arm64 --output bin/mac/haxe-language-server-arm64
 ```
 
 ### NOTE
 The output MUST be on the bin folder so the haxe macro can pick it up when building the app. you may compile the server from a different source path but we drop it inside of `language-servers/haxe/server.js`.
 
 # Building The App
-It's just a haxe C++ app so just make sure you have haxe, hxcpp and the target's required build tools (like msvc/mingw for windows or clang/gcc for linux or sumth idk)
+It's just a haxe C++ app so just make sure you have haxe, hxcpp and the target's required compiling stuff
 
 You need to install hxwebview through
 ```bash
