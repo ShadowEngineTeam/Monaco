@@ -79,7 +79,7 @@ pkg client/haxe/server.js --targets node22-linuxstatic-armv7 --output bin/linux/
 ### macOS
 ```bash
 pkg client/haxe/server.js --targets node22-macos-x64 --output bin/mac/haxe-language-server-x64
-pkg client/haxe/server.js --targets latnode22est-macos-arm64 --output bin/mac/haxe-language-server-arm64
+pkg client/haxe/server.js --targets node22-macos-arm64 --output bin/mac/haxe-language-server-arm64
 ```
 
 ### NOTE
