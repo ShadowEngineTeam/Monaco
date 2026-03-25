@@ -212,6 +212,43 @@ async function preRegisterHaxeLanguage() {
     );
 }
 
+async function preRegisterHxmlLanguage() {
+    monaco.languages.register({
+        id: 'hxml',
+        extensions: ['.hxml'],
+        aliases: ['HXML', 'hxml']
+    });
+
+    const { registerFileUrl } = registerExtension({
+        name: 'hxml-language',
+        publisher: 'haxe',
+        version: '1.0.0',
+        contributes: {
+            grammars: [{
+                language: 'hxml',
+                scopeName: 'source.hxml',
+                path: './hxml.tmLanguage.json'
+            }]
+        }
+    });
+
+    try {
+        const response = await fetch('/hxml.tmLanguage.json');
+        if (!response.ok) {
+            console.warn('[monaco] Missing /hxml.tmLanguage.json (status ' + response.status + '). Skipping HXML TextMate grammar.');
+            return;
+        }
+
+        const text = await response.text();
+        registerFileUrl(
+            './hxml.tmLanguage.json',
+            URL.createObjectURL(new Blob([text], { type: 'application/json' }))
+        );
+    } catch (e) {
+        console.warn('[monaco] Failed to load HXML TextMate grammar:', e);
+    }
+}
+
 async function preRegisterVsSetiIconTheme() {
     const { registerFileUrl } = registerExtension({
         name: 'theme-seti',
@@ -261,6 +298,14 @@ function postRegisterHaxeLanguage() {
     });
 }
 
+function postRegisterHxmlLanguage() {
+    // HXML syntax comment marker is commonly `#` (if your grammar uses something else,
+    // you can tweak this without needing to change the TextMate grammar).
+    monaco.languages.setLanguageConfiguration('hxml', {
+        comments: { lineComment: '#' }
+    });
+}
+
 // ─── Workspaces Service Stub ──────────────────────────────────────────────────
 
 // Stubs out IWorkspacesService since we don't need recently opened files —
@@ -296,6 +341,7 @@ async function main() {
 
     await preRegisterVsSetiIconTheme();
     await preRegisterHaxeLanguage();
+    await preRegisterHxmlLanguage();
 
     const container = document.getElementById('workbench');
 
@@ -366,6 +412,7 @@ async function main() {
     );
 
     postRegisterHaxeLanguage();
+    postRegisterHxmlLanguage();
 
     // set up LSP after bridge is ready
     await waitForBridge();
