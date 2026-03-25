@@ -86,7 +86,7 @@ pkg client/haxe/server.js --targets node22-macos-arm64 --output bin/mac/haxe-lan
 The output MUST be on the bin folder so the haxe macro can pick it up when building the app. you may compile the server from a different source path but we drop it inside of `client/haxe/server.js`.
 
 # Building The App
-It's just a haxe C++ app so just make sure you have haxe, hxcpp and the target's required build tools (like msvc/mingw for windows or clang/gcc for linux or sumth idk)
+It's just a haxe C++ app so just make sure you have haxe, hxcpp and the target's required compiling stuff
 
 You need to install hxwebview through
 ```bash
