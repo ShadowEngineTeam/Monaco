@@ -65,23 +65,21 @@ npm install -g @yao-pkg/pkg
 Then you may bundle it for the following targets:
 ### Windows
 ```bash
-pkg client/haxe/server.js --targets latest-win-x64 --output bin/win/haxe-language-server-x64
-pkg client/haxe/server.js --targets latest-win-x86 --output bin/win/haxe-language-server-x86
-pkg client/haxe/server.js --targets latest-win-arm64 --output bin/win/haxe-language-server-arm64
+pkg client/haxe/server.js --targets node22-win-x64 --output bin/win/haxe-language-server-x64
+pkg client/haxe/server.js --targets node22-win-arm64 --output bin/win/haxe-language-server-arm64
 ```
 
 ### Linux
 ```bash
-pkg client/haxe/server.js --targets latest-linuxstatic-x64 --output bin/linux/haxe-language-server-x64
-pkg client/haxe/server.js --targets latest-linux-x86 --output bin/linux/haxe-language-server-x86
-pkg client/haxe/server.js --targets latest-linuxstatic-arm64 --output bin/linux/haxe-language-server-arm64
-pkg client/haxe/server.js --targets latest-linux-armv7 --output bin/linux/haxe-language-server-armv7
+pkg client/haxe/server.js --targets node22-linuxstatic-x64 --output bin/linux/haxe-language-server-x64
+pkg client/haxe/server.js --targets node22-linuxstatic-arm64 --output bin/linux/haxe-language-server-arm64
+pkg client/haxe/server.js --targets node22-linuxstatic-armv7 --output bin/linux/haxe-language-server-armv7
 ```
 
 ### macOS
 ```bash
-pkg client/haxe/server.js --targets latest-macos-x64 --output bin/mac/haxe-language-server-x64
-pkg client/haxe/server.js --targets latest-macos-arm64 --output bin/mac/haxe-language-server-arm64
+pkg client/haxe/server.js --targets node22-macos-x64 --output bin/mac/haxe-language-server-x64
+pkg client/haxe/server.js --targets latnode22est-macos-arm64 --output bin/mac/haxe-language-server-arm64
 ```
 
 ### NOTE
