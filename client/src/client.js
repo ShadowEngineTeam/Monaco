@@ -431,7 +431,7 @@ async function main() {
             },
             initializationOptions: {
                 displayArguments: hxml ? [hxml] : [],
-                displayPort: 7331
+                displayPort: "auto"
             },
             errorHandler: {
                 error: () => ({ action: ErrorAction.Continue }),
@@ -446,7 +446,7 @@ async function main() {
     client.sendNotification('workspace/didChangeConfiguration', {
         settings: {
             haxe: {
-                displayPort: 7331,
+                displayPort: "auto",
                 enableDiagnostics: true,
                 enableCodeLens: true,
                 buildCompletionCache: true,

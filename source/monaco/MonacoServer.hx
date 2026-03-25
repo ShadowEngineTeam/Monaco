@@ -19,15 +19,18 @@ class MonacoServer
 {
 	public static var DEFAULT_IP:String = '127.0.0.1';
 	public static var DEFAULT_PORT:Int = 8080;
+	public static var serverPort(default, null):Int = DEFAULT_PORT;
 	public static var server:Null<Socket>;
 	public static var running(default, null):AtomicBool = new AtomicBool(false);
 
-	public static function startServer(root:String):Void
+	public static function startServer(root:String, ?port:Int):Void
 	{
 		server = new Socket();
 		// server.setBlocking(false);
-		server.bind(new Host(DEFAULT_IP), DEFAULT_PORT);
+		final bindPort:Int = port == null ? 0 : port;
+		server.bind(new Host(DEFAULT_IP), bindPort);
 		server.listen(5);
+		serverPort = server.host().port;
 
 		running.store(true);
 		Thread.create(() ->
@@ -47,12 +50,12 @@ class MonacoServer
 			}
 		});
 
-		trace('Monaco server running at http://$DEFAULT_IP:$DEFAULT_PORT');
+		trace('Monaco server running at http://$DEFAULT_IP:$serverPort');
 	}
 
 	public static function resolveAsset(path:String):String
 	{
-		return 'http://$DEFAULT_IP:$DEFAULT_PORT/$path';
+		return 'http://$DEFAULT_IP:$serverPort/$path';
 	}
 
 	public static function update(client:Socket, root:String):Void
@@ -116,6 +119,7 @@ class MonacoServer
 			{
 				server.close();
 				server = null;
+				serverPort = DEFAULT_PORT;
 			}
 		}
 	}
