@@ -29,7 +29,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: latest
 
       - name: Install pkg
         run: npm install -g @yao-pkg/pkg
@@ -42,14 +42,14 @@ jobs:
           pkg language-servers/haxe/server.js --targets node22-win-x64 --output bin/win/haxe-language-server-x64
 
       - name: Zip artifacts (Windows x64)
-        if: runner.os == 'windows-x64'
+        if: matrix.os == 'windows-x64'
         shell: pwsh
         run: |
           cd bin\win
           7z a haxe-language-server-win-x64.zip   haxe-language-server-x64.exe
 
       - name: Upload Windows x64
-        if: runner.os == 'windows-x64'
+        if: matrix.os == 'windows-x64'
         uses: actions/upload-artifact@v4
         with:
           name: haxe-language-server-win-x64
@@ -63,21 +63,21 @@ jobs:
           pkg language-servers/haxe/server.js --targets node22-win-arm64 --output bin/win/haxe-language-server-arm64
 
       - name: Zip artifacts (Windows arm64)
-        if: runner.os == 'windows-arm64'
+        if: matrix.os == 'windows-arm64'
         shell: pwsh
         run: |
           cd bin\win
           7z a haxe-language-server-win-arm64.zip   haxe-language-server-arm64.exe
 
       - name: Upload Windows arm64
-        if: runner.os == 'windows-arm64'
+        if: matrix.os == 'windows-arm64'
         uses: actions/upload-artifact@v4
         with:
           name: haxe-language-server-win-arm64
           path: bin/win/haxe-language-server-win-arm64.zip
 
       - name: Build binaries (Linux)
-        if: runner.os == 'linux'
+        if: matrix.os == 'linux'
         run: |
           sudo apt update
           sudo apt install qemu-user-binfmt
@@ -87,7 +87,7 @@ jobs:
           pkg language-servers/haxe/server.js --targets node20-linuxstatic-armv7 --output bin/linux/haxe-language-server-armv7
 
       - name: Zip artifacts (Linux)
-        if: runner.os == 'linux'
+        if: matrix.os == 'linux'
         run: |
           cd bin/linux
           zip haxe-language-server-linux-x64.zip haxe-language-server-x64
@@ -95,49 +95,49 @@ jobs:
           zip haxe-language-server-linux-armv7.zip haxe-language-server-armv7
 
       - name: Upload Linux x64
-        if: runner.os == 'linux'
+        if: matrix.os == 'linux'
         uses: actions/upload-artifact@v4
         with:
           name: haxe-language-server-linux-x64
           path: bin/linux/haxe-language-server-linux-x64.zip
 
       - name: Upload Linux arm64
-        if: runner.os == 'linux'
+        if: matrix.os == 'linux'
         uses: actions/upload-artifact@v4
         with:
           name: haxe-language-server-linux-arm64
           path: bin/linux/haxe-language-server-linux-arm64.zip
 
       - name: Upload Linux armv7
-        if: runner.os == 'linux'
+        if: matrix.os == 'linux'
         uses: actions/upload-artifact@v4
         with:
           name: haxe-language-server-linux-armv7
           path: bin/linux/haxe-language-server-linux-armv7.zip
 
       - name: Build binaries (macOS)
-        if: runner.os == 'macos'
+        if: matrix.os == 'macos'
         run: |
           mkdir -p bin/mac
           pkg language-servers/haxe/server.js --targets node22-macos-x64 --output bin/mac/haxe-language-server-x64
           pkg language-servers/haxe/server.js --targets node22-macos-arm64 --output bin/mac/haxe-language-server-arm64
 
       - name: Zip artifacts (macOS)
-        if: runner.os == 'macos'
+        if: matrix.os == 'macos'
         run: |
           cd bin/mac
           zip haxe-language-server-mac-x64.zip   haxe-language-server-x64
           zip haxe-language-server-mac-arm64.zip  haxe-language-server-arm64
 
       - name: Upload macOS x64
-        if: runner.os == 'macos'
+        if: matrix.os == 'macos'
         uses: actions/upload-artifact@v4
         with:
           name: haxe-language-server-mac-x64
           path: bin/mac/haxe-language-server-mac-x64.zip
 
       - name: Upload macOS arm64
-        if: runner.os == 'macos'
+        if: matrix.os == 'macos'
         uses: actions/upload-artifact@v4
         with:
           name: haxe-language-server-mac-arm64
