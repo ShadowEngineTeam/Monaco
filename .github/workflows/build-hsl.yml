@@ -1,10 +1,6 @@
 name: Build Haxe Language Server Binaries
 
 on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
   workflow_dispatch:
 
 jobs:
@@ -27,28 +23,24 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Install pkg
         run: npm install -g pkg
 
-      # ── Windows ────────────────────────────────────────────────────────────
       - name: Build binaries (Windows)
         if: runner.os == 'Windows'
         shell: bash
         run: |
           mkdir -p bin/win
-          pkg language-servers/haxe/server.js --targets node22-win-x64   --output bin/win/haxe-language-server-x64
-          pkg language-servers/haxe/server.js --targets node22-win-arm64  --output bin/win/haxe-language-server-arm64
+          pkg language-servers/haxe/server.js --targets node22-win-x64 --output bin/win/haxe-language-server-x64
+          pkg language-servers/haxe/server.js --targets node22-win-arm64 --output bin/win/haxe-language-server-arm64
 
       - name: Zip artifacts (Windows)
         if: runner.os == 'Windows'
         shell: bash
         run: |
           cd bin/win
-          7z a haxe-language-server-win-x64.zip   haxe-language-server-x64.exe
-          7z a haxe-language-server-win-arm64.zip  haxe-language-server-arm64.exe
+          7z a haxe-language-server-win-x64.zip haxe-language-server-x64.exe
+          7z a haxe-language-server-win-arm64.zip haxe-language-server-arm64.exe
 
       - name: Upload Windows x64
         if: runner.os == 'Windows'
@@ -64,22 +56,21 @@ jobs:
           name: haxe-language-server-win-arm64
           path: bin/win/haxe-language-server-win-arm64.zip
 
-      # ── Linux ──────────────────────────────────────────────────────────────
       - name: Build binaries (Linux)
         if: runner.os == 'Linux'
         run: |
           mkdir -p bin/linux
-          pkg language-servers/haxe/server.js --targets node22-linuxstatic-x64   --output bin/linux/haxe-language-server-x64
-          pkg language-servers/haxe/server.js --targets node22-linuxstatic-arm64  --output bin/linux/haxe-language-server-arm64
-          pkg language-servers/haxe/server.js --targets node22-linuxstatic-armv7  --output bin/linux/haxe-language-server-armv7
+          pkg language-servers/haxe/server.js --targets node22-linuxstatic-x64 --output bin/linux/haxe-language-server-x64
+          pkg language-servers/haxe/server.js --targets node22-linuxstatic-arm64 --output bin/linux/haxe-language-server-arm64
+          pkg language-servers/haxe/server.js --targets node20-linuxstatic-armv7 --output bin/linux/haxe-language-server-armv7
 
       - name: Zip artifacts (Linux)
         if: runner.os == 'Linux'
         run: |
           cd bin/linux
-          zip haxe-language-server-linux-x64.zip   haxe-language-server-x64
-          zip haxe-language-server-linux-arm64.zip  haxe-language-server-arm64
-          zip haxe-language-server-linux-armv7.zip  haxe-language-server-armv7
+          zip haxe-language-server-linux-x64.zip haxe-language-server-x64
+          zip haxe-language-server-linux-arm64.zip haxe-language-server-arm64
+          zip haxe-language-server-linux-armv7.zip haxe-language-server-armv7
 
       - name: Upload Linux x64
         if: runner.os == 'Linux'
@@ -102,13 +93,12 @@ jobs:
           name: haxe-language-server-linux-armv7
           path: bin/linux/haxe-language-server-linux-armv7.zip
 
-      # ── macOS ──────────────────────────────────────────────────────────────
       - name: Build binaries (macOS)
         if: runner.os == 'macOS'
         run: |
           mkdir -p bin/mac
-          pkg language-servers/haxe/server.js --targets node22-macos-x64   --output bin/mac/haxe-language-server-x64
-          pkg language-servers/haxe/server.js --targets node22-macos-arm64  --output bin/mac/haxe-language-server-arm64
+          pkg language-servers/haxe/server.js --targets node22-macos-x64 --output bin/mac/haxe-language-server-x64
+          pkg language-servers/haxe/server.js --targets node22-macos-arm64 --output bin/mac/haxe-language-server-arm64
 
       - name: Zip artifacts (macOS)
         if: runner.os == 'macOS'
@@ -131,49 +121,42 @@ jobs:
           name: haxe-language-server-mac-arm64
           path: bin/mac/haxe-language-server-mac-arm64.zip
 
-  # ── Collect & commit ────────────────────────────────────────────────────────
   commit:
     name: Collect and commit binaries
     runs-on: ubuntu-latest
     needs: build
-    # Only push on real commits to the default branch, not on PRs
-    if: github.event_name != 'pull_request'
 
     steps:
       - name: Checkout repository with submodules
         uses: actions/checkout@v4
         with:
           submodules: recursive
-          # Use a token with write access so the push is accepted
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Download every artifact produced by the matrix
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts/
 
-      # Unzip each archive into the correct bin/ sub-folder
       - name: Unzip Windows artifacts
         run: |
           mkdir -p bin/win
-          unzip -o artifacts/haxe-language-server-win-x64/haxe-language-server-win-x64.zip   -d bin/win/
+          unzip -o artifacts/haxe-language-server-win-x64/haxe-language-server-win-x64.zip -d bin/win/
           unzip -o artifacts/haxe-language-server-win-arm64/haxe-language-server-win-arm64.zip -d bin/win/
 
       - name: Unzip Linux artifacts
         run: |
           mkdir -p bin/linux
-          unzip -o artifacts/haxe-language-server-linux-x64/haxe-language-server-linux-x64.zip     -d bin/linux/
-          unzip -o artifacts/haxe-language-server-linux-arm64/haxe-language-server-linux-arm64.zip  -d bin/linux/
-          unzip -o artifacts/haxe-language-server-linux-armv7/haxe-language-server-linux-armv7.zip  -d bin/linux/
+          unzip -o artifacts/haxe-language-server-linux-x64/haxe-language-server-linux-x64.zip -d bin/linux/
+          unzip -o artifacts/haxe-language-server-linux-arm64/haxe-language-server-linux-arm64.zip -d bin/linux/
+          unzip -o artifacts/haxe-language-server-linux-armv7/haxe-language-server-linux-armv7.zip -d bin/linux/
 
       - name: Unzip macOS artifacts
         run: |
           mkdir -p bin/mac
-          unzip -o artifacts/haxe-language-server-mac-x64/haxe-language-server-mac-x64.zip   -d bin/mac/
+          unzip -o artifacts/haxe-language-server-mac-x64/haxe-language-server-mac-x64.zip -d bin/mac/
           unzip -o artifacts/haxe-language-server-mac-arm64/haxe-language-server-mac-arm64.zip -d bin/mac/
 
-      # Make Linux/macOS binaries executable after unzipping
       - name: Restore executable permissions
         run: |
           chmod +x bin/linux/haxe-language-server-x64 \
@@ -184,7 +167,7 @@ jobs:
 
       - name: Commit and push binaries
         run: |
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add bin/
           # Only commit if there is something new
